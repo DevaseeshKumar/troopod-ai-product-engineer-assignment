@@ -196,7 +196,7 @@
               image_2
               | image_url: width: 700
               | image_tag:
-                loading: 'lazy',
+                loading: 'eager',
                 widths: '400,600,700',
                 sizes: '(max-width: 900px) 55vw, 35vw',
                 class: 'purelane-hero__product-image purelane-hero__product-image--secondary',
@@ -209,7 +209,7 @@
               image_1
               | image_url: width: 800
               | image_tag:
-                loading: 'lazy',
+                loading: 'eager',
                 widths: '400,600,800',
                 sizes: '(max-width: 900px) 65vw, 40vw',
                 class: 'purelane-hero__product-image purelane-hero__product-image--primary',
@@ -249,7 +249,7 @@
               image_2
               | image_url: width: 700
               | image_tag:
-                loading: 'lazy',
+                loading: 'eager',
                 widths: '400,600,700',
                 sizes: '(max-width: 900px) 45vw, 30vw',
                 class: 'purelane-hero__product-image purelane-hero__product-image--left',
@@ -262,7 +262,7 @@
               image_3
               | image_url: width: 800
               | image_tag:
-                loading: 'lazy',
+                loading: 'eager',
                 widths: '400,600,800',
                 sizes: '(max-width: 900px) 55vw, 35vw',
                 class: 'purelane-hero__product-image purelane-hero__product-image--center',
@@ -275,7 +275,7 @@
               image_1
               | image_url: width: 700
               | image_tag:
-                loading: 'lazy',
+                loading: 'eager',
                 widths: '400,600,700',
                 sizes: '(max-width: 900px) 45vw, 30vw',
                 class: 'purelane-hero__product-image purelane-hero__product-image--right',
@@ -339,87 +339,104 @@
 
 <script>
   (() => {
-    const section = document.querySelector(
-      '#purelane-hero-{{ section.id }}'
-    );
+    /**
+     * Initialise (or reinitialise) a single Purelane hero section.
+     * Safe to call multiple times on the same element — cleans up first.
+     *
+     * @param {HTMLElement} section  The <section data-purelane-hero> element.
+     */
+    function purelaneHeroInit(section) {
+      if (!section) return;
 
-    if (!section || section.dataset.heroInitialized === 'true') return;
+      /* ── clean up any previous run ─────────────────────────────── */
+      if (section._pHeroTimer) {
+        clearInterval(section._pHeroTimer);
+        section._pHeroTimer = null;
+      }
 
-    section.dataset.heroInitialized = 'true';
-
-    const slides = Array.from(
-      section.querySelectorAll('[data-hero-slide]')
-    );
-
-    const dots = Array.from(
-      section.querySelectorAll('[data-hero-dot]')
-    );
-
-    if (!slides.length || !dots.length) return;
-
-    let current = 0;
-    let timer = null;
-
-    const reduceMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-
-    function showSlide(index) {
-      current = index;
-
-      slides.forEach((slide, i) => {
-        const active = i === current;
-
-        slide.classList.toggle('is-active', active);
-        slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+      /* Remove old dot listeners by cloning each dot node */
+      const oldDots = Array.from(section.querySelectorAll('[data-hero-dot]'));
+      oldDots.forEach(dot => {
+        const fresh = dot.cloneNode(true);
+        dot.parentNode.replaceChild(fresh, dot);
       });
 
-      dots.forEach((dot, i) => {
-        const active = i === current;
+      /* ── gather elements ────────────────────────────────────────── */
+      const slides = Array.from(section.querySelectorAll('[data-hero-slide]'));
+      const dots   = Array.from(section.querySelectorAll('[data-hero-dot]'));
 
-        dot.classList.toggle('is-active', active);
-        dot.setAttribute(
-          'aria-current',
-          active ? 'true' : 'false'
-        );
+      if (!slides.length || !dots.length) return;
+
+      let current     = 0;
+      const reduceMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+
+      /* ── core functions ─────────────────────────────────────────── */
+      function showSlide(index) {
+        current = index;
+
+        slides.forEach((slide, i) => {
+          const active = i === current;
+          slide.classList.toggle('is-active', active);
+          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+
+        dots.forEach((dot, i) => {
+          const active = i === current;
+          dot.classList.toggle('is-active', active);
+          dot.setAttribute('aria-current', active ? 'true' : 'false');
+        });
+      }
+
+      function startAutoplay() {
+        if (reduceMotion) return;
+        clearInterval(section._pHeroTimer);
+        section._pHeroTimer = setInterval(() => {
+          showSlide((current + 1) % slides.length);
+        }, 4200);
+      }
+
+      function stopAutoplay() {
+        clearInterval(section._pHeroTimer);
+      }
+
+      /* ── dot click ──────────────────────────────────────────────── */
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          showSlide(index);
+          startAutoplay();
+        });
       });
+
+      /* ── pause on interaction ───────────────────────────────────── */
+      section.addEventListener('mouseenter', stopAutoplay);
+      section.addEventListener('mouseleave', startAutoplay);
+      section.addEventListener('focusin',    stopAutoplay);
+      section.addEventListener('focusout',   startAutoplay);
+
+      /* ── boot ───────────────────────────────────────────────────── */
+      showSlide(0);
+      startAutoplay();
     }
 
-    function startAutoplay() {
-      if (reduceMotion) return;
+    /* ── page load ────────────────────────────────────────────────── */
+    document.querySelectorAll('[data-purelane-hero]').forEach(purelaneHeroInit);
 
-      clearInterval(timer);
-
-      timer = setInterval(() => {
-        showSlide((current + 1) % slides.length);
-      }, 4200);
-    }
-
-    dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        showSlide(index);
-        startAutoplay();
-      });
+    /* ── Shopify Theme Editor: section reloaded ───────────────────── */
+    document.addEventListener('shopify:section:load', (event) => {
+      const section = event.target.querySelector('[data-purelane-hero]');
+      if (section) purelaneHeroInit(section);
     });
 
-    section.addEventListener('mouseenter', () => {
-      clearInterval(timer);
+    /* ── Shopify Theme Editor: section removed ────────────────────── */
+    document.addEventListener('shopify:section:unload', (event) => {
+      const section = event.target.querySelector('[data-purelane-hero]');
+      if (section && section._pHeroTimer) {
+        clearInterval(section._pHeroTimer);
+        section._pHeroTimer = null;
+      }
     });
-
-    section.addEventListener('mouseleave', () => {
-      startAutoplay();
-    });
-
-    section.addEventListener('focusin', () => {
-      clearInterval(timer);
-    });
-
-    section.addEventListener('focusout', () => {
-      startAutoplay();
-    });
-
-    showSlide(0);
-    startAutoplay();
   })();
 </script>
 

@@ -16,6 +16,7 @@
 
   --hero-max-width: 1180px;
   --hero-radius: 26px;
+  --hero-ease: cubic-bezier(.2,.7,.2,1);
 
   position: relative;
   z-index: 2;
@@ -42,10 +43,25 @@
     );
 }
 
-/* Hero lighting */
+/*
+  The hero must sit flush at the document top.
+  #MainContent has padding-top to offset the fixed header,
+  but the hero already handles its own internal spacing (150px top padding).
+  Pulling the hero back up by the same amount restores full-bleed behavior.
+*/
+.section-purelane-hero {
+  margin-top: calc(-1 * var(--purelane-header-offset, 110px));
+}
+
+
+/* =====================================================
+   HERO LIGHTING
+   ===================================================== */
+
 .purelane-hero__overlay {
   position: absolute;
   inset: 0;
+
   pointer-events: none;
 
   background:
@@ -58,7 +74,10 @@
     );
 }
 
-/* Container */
+/* =====================================================
+   CONTAINER
+   ===================================================== */
+
 .purelane-hero__container {
   position: relative;
   z-index: 2;
@@ -67,6 +86,7 @@
   max-width: var(--hero-max-width);
 
   margin: 0 auto;
+
   padding: 0 18px;
 }
 
@@ -87,10 +107,15 @@
   color: var(--hero-surface);
 
   font-family: Outfit, system-ui, sans-serif;
+
   font-size: clamp(48px, 8.6vw, 112px);
+
   font-weight: 800;
+
   line-height: 0.87;
+
   letter-spacing: -0.018em;
+
   text-transform: uppercase;
 
   text-shadow:
@@ -105,8 +130,11 @@
   margin: 0 0 18px;
 
   font-size: 11px;
+
   font-weight: 700;
+
   letter-spacing: 0.22em;
+
   text-transform: uppercase;
 
   color: var(--hero-paper-muted);
@@ -151,6 +179,7 @@
   margin: 0;
 
   font-size: clamp(15px, 1.35vw, 17.5px);
+
   line-height: 1.62;
 
   color: var(--hero-paper-soft);
@@ -162,6 +191,7 @@
 
 .purelane-hero__actions {
   display: flex;
+
   flex-wrap: wrap;
 
   gap: 11px;
@@ -171,6 +201,7 @@
 
 .purelane-hero__button {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
@@ -183,9 +214,13 @@
   border-radius: 999px;
 
   font-size: 12.5px;
+
   font-weight: 700;
+
   line-height: 1;
+
   letter-spacing: 0.13em;
+
   text-transform: uppercase;
 
   white-space: nowrap;
@@ -232,6 +267,7 @@
   border: 1px solid rgba(236,230,247,.30);
 
   backdrop-filter: blur(12px);
+
   -webkit-backdrop-filter: blur(12px);
 }
 
@@ -254,6 +290,7 @@
     );
 
   backdrop-filter: blur(18px) saturate(135%);
+
   -webkit-backdrop-filter: blur(18px) saturate(135%);
 
   border: 1px solid rgba(236,230,247,.16);
@@ -271,6 +308,7 @@
   position: absolute;
 
   right: 18px;
+
   top: 50%;
 
   transform: translateY(-50%);
@@ -280,6 +318,7 @@
   z-index: 8;
 
   display: flex;
+
   flex-direction: column;
 
   gap: 2px;
@@ -296,6 +335,7 @@
     );
 
   backdrop-filter: blur(18px) saturate(135%);
+
   -webkit-backdrop-filter: blur(18px) saturate(135%);
 
   border: 1px solid rgba(236,230,247,.16);
@@ -320,6 +360,7 @@
   height: 38px;
 
   display: grid;
+
   place-items: center;
 
   margin: 0 auto 8px;
@@ -342,10 +383,13 @@
   display: block;
 
   font-size: 8.5px;
+
   font-weight: 700;
+
   line-height: 1.34;
 
   letter-spacing: .11em;
+
   text-transform: uppercase;
 
   color: var(--hero-paper-soft);
@@ -366,10 +410,11 @@
 .purelane-hero__product {
   position: absolute;
 
-  right: 2%;
+  right: 3%;
+
   bottom: 28px;
 
-  width: min(50vw, 560px);
+  width: min(52vw, 620px);
 
   z-index: 4;
 
@@ -383,15 +428,19 @@
   position: relative;
 
   width: 100%;
-  height: clamp(380px, 74svh, 680px);
+
+  height: clamp(380px, 68svh, 600px);
 }
 
 .purelane-hero__slide {
   position: absolute;
+
   inset: 0;
 
   display: flex;
+
   align-items: flex-end;
+
   justify-content: flex-end;
 
   padding-right: 2%;
@@ -406,6 +455,7 @@
 
 .purelane-hero__slide.is-active {
   opacity: 1;
+
   pointer-events: auto;
 }
 
@@ -419,23 +469,24 @@
   display: block;
 
   width: auto;
-  height: 100%;
+
+  flex: 0 0 auto;
 
   object-fit: contain;
 
-  opacity: 0;
+  object-position: center bottom;
 
-  transform:
-    translateY(28px)
-    scale(.94);
+  opacity: 1;
+
+  transform: none;
 
   transition:
-    opacity .8s cubic-bezier(.2,.7,.2,1),
-    transform .8s cubic-bezier(.2,.7,.2,1);
+    opacity 0.8s var(--hero-ease),
+    transform 0.8s var(--hero-ease);
 
   filter:
     drop-shadow(
-      0 26px 40px rgba(1,22,20,.66)
+      0 26px 40px rgba(1, 22, 20, 0.66)
     );
 }
 
@@ -446,55 +497,76 @@
   transform: none;
 }
 
-/* Single product */
+/* =====================================================
+   SLIDE 1 — SINGLE PRODUCT
+   ===================================================== */
+
 .purelane-hero__slide[data-hero-slide="1"]
 .purelane-hero__product-image {
-  height: 100%;
+  height: 68%;
+
+  max-height: 470px;
 }
 
-/* Two products */
+/* =====================================================
+   SLIDE 2 — TWO PRODUCTS
+   ===================================================== */
+
 .purelane-hero__slide[data-hero-slide="2"]
 .purelane-hero__product-image--secondary {
-  height: 80%;
+  height: 53%;
 
-  margin-right: -8%;
+  max-height: 365px;
+
+  margin-right: -7%;
 
   z-index: 1;
 }
 
 .purelane-hero__slide[data-hero-slide="2"]
 .purelane-hero__product-image--primary {
-  height: 97%;
+  height: 69%;
+
+  max-height: 475px;
 
   z-index: 3;
 }
 
-/* Three products */
+/* =====================================================
+   SLIDE 3 — THREE PRODUCTS
+   ===================================================== */
+
 .purelane-hero__slide[data-hero-slide="3"] {
   align-items: flex-end;
 }
 
 .purelane-hero__slide[data-hero-slide="3"]
 .purelane-hero__product-image--left {
-  height: 75%;
+  height: 51%;
 
-  margin-right: -8%;
+  max-height: 350px;
+
+  margin-right: -7%;
 
   z-index: 1;
 }
 
 .purelane-hero__slide[data-hero-slide="3"]
 .purelane-hero__product-image--center {
-  height: 97%;
+  height: 69%;
+
+  max-height: 475px;
 
   z-index: 3;
 }
 
 .purelane-hero__slide[data-hero-slide="3"]
 .purelane-hero__product-image--right {
-  height: 79%;
+  height: 54%;
 
-  margin-left: -8%;
+  max-height: 370px;
+
+  margin-left: -7%;
 
   z-index: 2;
 }
@@ -507,6 +579,7 @@
   position: absolute;
 
   left: 0;
+
   bottom: 2%;
 
   z-index: 7;
@@ -537,9 +610,11 @@
   display: block;
 
   font-size: 9px;
+
   font-weight: 800;
 
   letter-spacing: .17em;
+
   text-transform: uppercase;
 
   color: var(--hero-accent);
@@ -547,6 +622,7 @@
 
 .purelane-hero__price-value {
   display: flex;
+
   align-items: baseline;
 
   gap: 7px;
@@ -558,6 +634,7 @@
   font-family: Outfit, system-ui, sans-serif;
 
   font-size: 23px;
+
   font-weight: 800;
 
   line-height: 1;
@@ -581,9 +658,11 @@
   border-radius: 999px;
 
   font-size: 8.4px;
+
   font-weight: 800;
 
   letter-spacing: .11em;
+
   text-transform: uppercase;
 
   background: rgba(240,160,60,.20);
@@ -599,7 +678,9 @@
 
 .purelane-hero__dots {
   display: flex;
+
   justify-content: center;
+
   align-items: center;
 
   gap: 7px;
@@ -609,6 +690,7 @@
 
 .purelane-hero__dots button {
   width: 7px;
+
   height: 7px;
 
   padding: 0;
@@ -646,9 +728,51 @@
   }
 
   .purelane-hero__product {
-    width: min(44vw, 440px);
+    width: min(48vw, 500px);
 
     right: 3%;
+  }
+
+  .purelane-hero__slide[data-hero-slide="1"]
+  .purelane-hero__product-image {
+    height: 66%;
+
+    max-height: 420px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="2"]
+  .purelane-hero__product-image--secondary {
+    height: 51%;
+
+    max-height: 325px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="2"]
+  .purelane-hero__product-image--primary {
+    height: 66%;
+
+    max-height: 430px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--left {
+    height: 49%;
+
+    max-height: 310px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--center {
+    height: 66%;
+
+    max-height: 430px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--right {
+    height: 51%;
+
+    max-height: 325px;
   }
 }
 
@@ -681,6 +805,7 @@
     position: relative;
 
     right: auto;
+
     bottom: auto;
 
     width: min(88vw, 420px);
@@ -690,6 +815,7 @@
 
   .purelane-hero__container {
     display: flex;
+
     flex-direction: column;
   }
 
@@ -711,11 +837,13 @@
     text-align: center;
 
     font-size: 8.5px;
+
     font-weight: 700;
 
     line-height: 1.3;
 
     letter-spacing: .1em;
+
     text-transform: uppercase;
 
     color: var(--hero-paper-soft);
@@ -730,6 +858,7 @@
     border: 1px solid rgba(236,230,247,.16);
 
     backdrop-filter: blur(14px);
+
     -webkit-backdrop-filter: blur(14px);
   }
 
@@ -737,11 +866,60 @@
     display: block;
 
     width: 18px;
+
     height: 18px;
 
     margin: 0 auto 6px;
 
     color: var(--hero-accent);
+  }
+
+  /* Mobile product sizing */
+
+  .purelane-hero__stage {
+    height: 430px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="1"]
+  .purelane-hero__product-image {
+    height: 72%;
+
+    max-height: 310px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="2"]
+  .purelane-hero__product-image--secondary {
+    height: 56%;
+
+    max-height: 240px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="2"]
+  .purelane-hero__product-image--primary {
+    height: 72%;
+
+    max-height: 310px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--left {
+    height: 53%;
+
+    max-height: 225px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--center {
+    height: 72%;
+
+    max-height: 310px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--right {
+    height: 56%;
+
+    max-height: 240px;
   }
 }
 
@@ -788,6 +966,48 @@
 
   .purelane-hero__price-label {
     font-size: 8px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="1"]
+  .purelane-hero__product-image {
+    height: 70%;
+
+    max-height: 290px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="2"]
+  .purelane-hero__product-image--secondary {
+    height: 54%;
+
+    max-height: 220px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="2"]
+  .purelane-hero__product-image--primary {
+    height: 70%;
+
+    max-height: 290px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--left {
+    height: 51%;
+
+    max-height: 205px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--center {
+    height: 70%;
+
+    max-height: 290px;
+  }
+
+  .purelane-hero__slide[data-hero-slide="3"]
+  .purelane-hero__product-image--right {
+    height: 54%;
+
+    max-height: 220px;
   }
 }
 

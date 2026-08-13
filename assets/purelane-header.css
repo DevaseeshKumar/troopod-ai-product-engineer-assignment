@@ -1,0 +1,480 @@
+/* =========================================================
+   PURELANE HEADER
+   Floating glass navigation
+   ========================================================= */
+
+:root {
+  --purelane-header-ink: #21183d;
+  --purelane-header-muted: #6d6880;
+  --purelane-header-purple: #4b3a8f;
+  --purelane-header-orange: #b8701c;
+  --purelane-header-glass: rgba(255, 255, 255, 0.78);
+  --purelane-header-border: rgba(75, 58, 143, 0.14);
+
+  /*
+    Offset so page content doesn't render behind the fixed header.
+    header top: 28px + min-height: 64px = 92px + 18px breathing room
+  */
+  --purelane-header-offset: 110px;
+}
+
+/* Push main content below the fixed header on all pages */
+#MainContent {
+  padding-top: var(--purelane-header-offset);
+}
+
+/* =========================================================
+   HEADER WRAPPER
+   ========================================================= */
+
+.header-wrapper {
+  position: relative;
+  z-index: 100;
+}
+
+/*
+  Dawn's header is normally part of the page flow.
+  We turn it into a floating pill.
+*/
+
+.header {
+  position: fixed !important;
+
+  top: 28px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: calc(100% - 40px);
+
+  max-width: 1220px;
+
+  min-height: 64px;
+
+  padding:
+    7px
+    10px;
+
+  display: flex;
+
+  align-items: center;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.88),
+      rgba(248,247,252,0.72)
+    );
+
+  border:
+    1px solid var(--purelane-header-border);
+
+  box-shadow:
+    0 14px 40px rgba(42, 31, 72, 0.10),
+    0 3px 12px rgba(42, 31, 72, 0.06),
+    inset 0 1px 0 rgba(255,255,255,0.90);
+
+  backdrop-filter:
+    blur(20px)
+    saturate(150%);
+
+  -webkit-backdrop-filter:
+    blur(20px)
+    saturate(150%);
+
+  transition:
+    top .3s ease,
+    width .3s ease,
+    box-shadow .3s ease;
+}
+
+/* =========================================================
+   HEADER INNER
+   ========================================================= */
+
+.header__heading,
+.header__heading-link {
+  color: var(--purelane-header-ink);
+}
+
+.header__heading-link {
+  text-decoration: none;
+}
+
+.header__heading-logo {
+  max-width: 145px;
+}
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.header__heading {
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.header__inline-menu {
+  margin-left: 32px;
+
+  flex: 1;
+}
+
+.header__inline-menu .list-menu {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+}
+
+.header__inline-menu .list-menu > li {
+  display: flex;
+
+  align-items: center;
+}
+
+.header__inline-menu .list-menu > li > a,
+.header__inline-menu .list-menu > li > summary {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 42px;
+
+  padding:
+    0
+    14px;
+
+  border-radius: 999px;
+
+  color: var(--purelane-header-muted);
+
+  font-size: 12px;
+
+  font-weight: 650;
+
+  line-height: 1;
+
+  letter-spacing: .04em;
+
+  text-decoration: none;
+
+  transition:
+    color .2s ease,
+    background .2s ease,
+    transform .2s ease;
+}
+
+.header__inline-menu .list-menu > li > a:hover,
+.header__inline-menu .list-menu > li > summary:hover {
+  color: var(--purelane-header-purple);
+
+  background:
+    rgba(75,58,143,.07);
+}
+
+.header__inline-menu .list-menu > li > a[aria-current="page"] {
+  color: var(--purelane-header-purple);
+
+  background:
+    rgba(75,58,143,.08);
+}
+
+/* =========================================================
+   HEADER ICONS
+   ========================================================= */
+
+.header__icons {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 3px;
+
+  flex-shrink: 0;
+}
+
+.header__icon {
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: var(--purelane-header-ink);
+
+  border-radius: 50%;
+
+  transition:
+    color .2s ease,
+    background .2s ease,
+    transform .2s ease;
+}
+
+.header__icon:hover {
+  color: var(--purelane-header-purple);
+
+  background:
+    rgba(75,58,143,.08);
+
+  transform: translateY(-1px);
+}
+
+.header__icon .svg-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.header__icon .svg-wrapper svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* =========================================================
+   CART COUNT
+   ========================================================= */
+
+.header__icon .cart-count-bubble {
+  min-width: 17px;
+  min-height: 17px;
+
+  top: 1px;
+  right: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 4px;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  background:
+    var(--purelane-header-orange);
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  line-height: 1;
+}
+
+/* =========================================================
+   ACCOUNT
+   ========================================================= */
+
+.header__icon--account {
+  display: inline-flex;
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.header__search {
+  display: inline-flex;
+}
+
+/* =========================================================
+   MENU DRAWER / HAMBURGER
+   ========================================================= */
+
+.header__icon--menu {
+  display: none;
+}
+
+/* =========================================================
+   DROPDOWN
+   ========================================================= */
+
+.header__submenu {
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  background:
+    rgba(255,255,255,.94);
+
+  border:
+    1px solid rgba(75,58,143,.12);
+
+  box-shadow:
+    0 20px 50px rgba(42,31,72,.14);
+
+  backdrop-filter: blur(20px);
+
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.header__submenu .header__menu-item {
+  color: var(--purelane-header-muted);
+}
+
+.header__submenu .header__menu-item:hover {
+  color: var(--purelane-header-purple);
+
+  background:
+    rgba(75,58,143,.06);
+}
+
+/* =========================================================
+   SCROLLED HEADER
+   ========================================================= */
+
+.scrolled-past-header .header {
+  top: 12px;
+
+  box-shadow:
+    0 18px 50px rgba(42,31,72,.14),
+    0 3px 15px rgba(42,31,72,.08),
+    inset 0 1px 0 rgba(255,255,255,.92);
+}
+
+/* =========================================================
+   HEADER OVER HERO
+   ========================================================= */
+
+.shopify-section-header {
+  position: relative;
+
+  z-index: 100;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 990px) {
+
+  :root {
+    --purelane-header-offset: 86px; /* 14px top + 58px height + 14px buffer */
+  }
+
+  .header {
+    top: 14px;
+
+    width: calc(100% - 24px);
+
+    min-height: 58px;
+
+    padding:
+      5px
+      8px;
+  }
+
+  .header__heading-logo {
+    max-width: 120px;
+  }
+
+  .header__inline-menu {
+    display: none;
+  }
+
+  .header__icons {
+    margin-left: auto;
+
+    gap: 0;
+  }
+
+  .header__icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header__icon--menu {
+    display: inline-flex;
+  }
+
+  .header__icon--account {
+    display: none;
+  }
+
+  .header__search {
+    display: inline-flex;
+  }
+
+  .header__icon .svg-wrapper svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .scrolled-past-header .header {
+    top: 8px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 600px) {
+
+  .header {
+    width: calc(100% - 18px);
+
+    top: 9px;
+
+    min-height: 54px;
+
+    padding:
+      4px
+      6px;
+  }
+
+  .header__heading-logo {
+    max-width: 108px;
+  }
+
+  .header__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .header__icon .svg-wrapper svg {
+    width: 18px;
+    height: 18px;
+  }
+
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.header__icon:focus-visible,
+.header__inline-menu a:focus-visible,
+.header__inline-menu summary:focus-visible {
+  outline:
+    2px solid
+    var(--purelane-header-orange);
+
+  outline-offset: 3px;
+}
