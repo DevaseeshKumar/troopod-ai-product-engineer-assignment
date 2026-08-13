@@ -57,6 +57,12 @@
     <!-- Hero copy -->
     <div class="purelane-hero__copy">
 
+      {% if section.settings.eyebrow != blank %}
+        <p class="purelane-hero__eyebrow">
+          {{ section.settings.eyebrow | escape }}
+        </p>
+      {% endif %}
+
       <h1
         id="purelane-hero-title-{{ section.id }}"
         class="purelane-hero__title"
@@ -147,24 +153,27 @@
           data-hero-slide="1"
           aria-hidden="false"
         >
-          {% if image_1 %}
-            {{
-              image_1
-              | image_url: width: 900
-              | image_tag:
-                loading: 'eager',
-                widths: '400,600,800,900',
-                sizes: '(max-width: 900px) 80vw, 50vw',
-                class: 'purelane-hero__product-image',
-                alt: product_1.title
-            }}
-          {% else %}
-            <div class="purelane-hero__no-image">
-              {{ product_1.title | default: 'Product image' }}
-            </div>
-          {% endif %}
+          <div class="purelane-hero__composition purelane-hero__composition--single">
+            {% if image_1 %}
+              {{
+                image_1
+                | image_url: width: 900
+                | image_tag:
+                  loading: 'eager',
+                  fetchpriority: 'high',
+                  widths: '400,600,800,900',
+                  sizes: '(max-width: 900px) 80vw, 50vw',
+                  class: 'purelane-hero__product-image purelane-hero__product-image--solo purelane-hero__product-image--delay-1',
+                  alt: product_1.title
+              }}
+            {% else %}
+              <div class="purelane-hero__no-image">
+                {{ product_1.title | default: 'Product image' }}
+              </div>
+            {% endif %}
+          </div>
 
-          <div class="purelane-hero__price glass">
+          <div class="purelane-hero__price purelane-glass-2">
             <span class="purelane-hero__price-label">
               {{ section.settings.offer_1_label }}
             </span>
@@ -191,33 +200,35 @@
           data-hero-slide="2"
           aria-hidden="true"
         >
-          {% if image_2 %}
-            {{
-              image_2
-              | image_url: width: 700
-              | image_tag:
-                loading: 'eager',
-                widths: '400,600,700',
-                sizes: '(max-width: 900px) 55vw, 35vw',
-                class: 'purelane-hero__product-image purelane-hero__product-image--secondary',
-                alt: product_2.title
-            }}
-          {% endif %}
+          <div class="purelane-hero__composition purelane-hero__composition--duo">
+            {% if image_2 %}
+              {{
+                image_2
+                | image_url: width: 700
+                | image_tag:
+                  loading: 'eager',
+                  widths: '400,600,700',
+                  sizes: '(max-width: 900px) 55vw, 35vw',
+                  class: 'purelane-hero__product-image purelane-hero__product-image--secondary purelane-hero__product-image--delay-1',
+                  alt: product_2.title
+              }}
+            {% endif %}
 
-          {% if image_1 %}
-            {{
-              image_1
-              | image_url: width: 800
-              | image_tag:
-                loading: 'eager',
-                widths: '400,600,800',
-                sizes: '(max-width: 900px) 65vw, 40vw',
-                class: 'purelane-hero__product-image purelane-hero__product-image--primary',
-                alt: product_1.title
-            }}
-          {% endif %}
+            {% if image_1 %}
+              {{
+                image_1
+                | image_url: width: 800
+                | image_tag:
+                  loading: 'eager',
+                  widths: '400,600,800',
+                  sizes: '(max-width: 900px) 65vw, 40vw',
+                  class: 'purelane-hero__product-image purelane-hero__product-image--primary purelane-hero__product-image--delay-2',
+                  alt: product_1.title
+              }}
+            {% endif %}
+          </div>
 
-          <div class="purelane-hero__price glass">
+          <div class="purelane-hero__price purelane-glass-2">
             <span class="purelane-hero__price-label">
               {{ section.settings.offer_2_label }}
             </span>
@@ -244,46 +255,48 @@
           data-hero-slide="3"
           aria-hidden="true"
         >
-          {% if image_2 %}
-            {{
-              image_2
-              | image_url: width: 700
-              | image_tag:
-                loading: 'eager',
-                widths: '400,600,700',
-                sizes: '(max-width: 900px) 45vw, 30vw',
-                class: 'purelane-hero__product-image purelane-hero__product-image--left',
-                alt: product_2.title
-            }}
-          {% endif %}
+          <div class="purelane-hero__composition purelane-hero__composition--trio">
+            {% if image_2 %}
+              {{
+                image_2
+                | image_url: width: 700
+                | image_tag:
+                  loading: 'eager',
+                  widths: '400,600,700',
+                  sizes: '(max-width: 900px) 45vw, 30vw',
+                  class: 'purelane-hero__product-image purelane-hero__product-image--left purelane-hero__product-image--delay-1',
+                  alt: product_2.title
+              }}
+            {% endif %}
 
-          {% if image_3 %}
-            {{
-              image_3
-              | image_url: width: 800
-              | image_tag:
-                loading: 'eager',
-                widths: '400,600,800',
-                sizes: '(max-width: 900px) 55vw, 35vw',
-                class: 'purelane-hero__product-image purelane-hero__product-image--center',
-                alt: product_3.title
-            }}
-          {% endif %}
+            {% if image_3 %}
+              {{
+                image_3
+                | image_url: width: 800
+                | image_tag:
+                  loading: 'eager',
+                  widths: '400,600,800',
+                  sizes: '(max-width: 900px) 55vw, 35vw',
+                  class: 'purelane-hero__product-image purelane-hero__product-image--center purelane-hero__product-image--delay-2',
+                  alt: product_3.title
+              }}
+            {% endif %}
 
-          {% if image_1 %}
-            {{
-              image_1
-              | image_url: width: 700
-              | image_tag:
-                loading: 'eager',
-                widths: '400,600,700',
-                sizes: '(max-width: 900px) 45vw, 30vw',
-                class: 'purelane-hero__product-image purelane-hero__product-image--right',
-                alt: product_1.title
-            }}
-          {% endif %}
+            {% if image_1 %}
+              {{
+                image_1
+                | image_url: width: 700
+                | image_tag:
+                  loading: 'eager',
+                  widths: '400,600,700',
+                  sizes: '(max-width: 900px) 45vw, 30vw',
+                  class: 'purelane-hero__product-image purelane-hero__product-image--right purelane-hero__product-image--delay-3',
+                  alt: product_1.title
+              }}
+            {% endif %}
+          </div>
 
-          <div class="purelane-hero__price glass">
+          <div class="purelane-hero__price purelane-glass-2">
             <span class="purelane-hero__price-label">
               {{ section.settings.offer_3_label }}
             </span>
@@ -354,7 +367,15 @@
         section._pHeroTimer = null;
       }
 
-      /* Remove old dot listeners by cloning each dot node */
+      /* Remove old listeners by cloning interactive nodes */
+      if (section._pHeroHandlers) {
+        section.removeEventListener('mouseenter', section._pHeroHandlers.stop);
+        section.removeEventListener('mouseleave', section._pHeroHandlers.start);
+        section.removeEventListener('focusin', section._pHeroHandlers.stop);
+        section.removeEventListener('focusout', section._pHeroHandlers.start);
+        section._pHeroHandlers = null;
+      }
+
       const oldDots = Array.from(section.querySelectorAll('[data-hero-dot]'));
       oldDots.forEach(dot => {
         const fresh = dot.cloneNode(true);
@@ -410,10 +431,11 @@
       });
 
       /* ── pause on interaction ───────────────────────────────────── */
-      section.addEventListener('mouseenter', stopAutoplay);
-      section.addEventListener('mouseleave', startAutoplay);
-      section.addEventListener('focusin',    stopAutoplay);
-      section.addEventListener('focusout',   startAutoplay);
+      section._pHeroHandlers = { stop: stopAutoplay, start: startAutoplay };
+      section.addEventListener('mouseenter', section._pHeroHandlers.stop);
+      section.addEventListener('mouseleave', section._pHeroHandlers.start);
+      section.addEventListener('focusin', section._pHeroHandlers.stop);
+      section.addEventListener('focusout', section._pHeroHandlers.start);
 
       /* ── boot ───────────────────────────────────────────────────── */
       showSlide(0);
@@ -432,9 +454,19 @@
     /* ── Shopify Theme Editor: section removed ────────────────────── */
     document.addEventListener('shopify:section:unload', (event) => {
       const section = event.target.querySelector('[data-purelane-hero]');
-      if (section && section._pHeroTimer) {
+      if (!section) return;
+
+      if (section._pHeroTimer) {
         clearInterval(section._pHeroTimer);
         section._pHeroTimer = null;
+      }
+
+      if (section._pHeroHandlers) {
+        section.removeEventListener('mouseenter', section._pHeroHandlers.stop);
+        section.removeEventListener('mouseleave', section._pHeroHandlers.start);
+        section.removeEventListener('focusin', section._pHeroHandlers.stop);
+        section.removeEventListener('focusout', section._pHeroHandlers.start);
+        section._pHeroHandlers = null;
       }
     });
   })();
@@ -446,6 +478,12 @@
   "tag": "section",
   "class": "section-purelane-hero",
   "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Plant-powered homecare"
+    },
     {
       "type": "text",
       "id": "heading_line_1",
