@@ -1,111 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
 /* =========================================================
-   PURELANE GLOBAL STYLES
+   PURELANE GLOBAL DESIGN SYSTEM
+   Visual language: Premium, Clean, Modern, Natural, Sophisticated
+   ========================================================= */
+
+:root {
+  /* ── Color Palette ────────────────────────────────────── */
+  --purelane-ink: #17102b;
+  --purelane-deep: #241a3d;
+  --purelane-bg: #17102b;
+  --purelane-bg-deep: #011412;
+
+  --purelane-purple: #4b3a8f;
+  --purelane-purple-light: #6b55b8;
+
+  --purelane-paper: #ece6f7;
+  --purelane-paper-soft: rgba(236, 230, 247, 0.74);
+  --purelane-paper-muted: rgba(236, 230, 247, 0.52);
+
+  --purelane-accent: #f0a03c;
+  --purelane-accent-dark: #c9761d;
+
+  --purelane-green: #5d8d1c;
+  --purelane-green-bright: #8bc34a;
+  --purelane-teal: #1ea38d;
+
+  --purelane-surface: #faf7fd;
+
+  --purelane-border: rgba(236, 230, 247, 0.16);
+  --purelane-border-subtle: rgba(236, 230, 247, 0.10);
+
+  /* ── Glassmorphism ───────────────────────────────────── */
+  --purelane-glass-bg: linear-gradient(158deg, rgba(236, 230, 247, 0.15), rgba(75, 58, 143, 0.20) 58%, rgba(23, 16, 43, 0.28));
+  --purelane-glass-bg-alt: linear-gradient(158deg, rgba(236, 230, 247, 0.10), rgba(0, 48, 46, 0.22));
+  --purelane-glass-line: rgba(236, 230, 247, 0.22);
+  --purelane-glass-shadow: 0 26px 74px rgba(18, 12, 34, 0.44);
+  --purelane-glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+
+  /* ── Layout & Surfaces ────────────────────────────────── */
+  --purelane-max-width: 1180px;
+  --purelane-radius: 26px;
+  --purelane-radius-sm: 16px;
+  --purelane-radius-pill: 999px;
+
+  --purelane-spacing-section: 34px;
+  --purelane-ease: cubic-bezier(.2, .7, .2, 1);
+
+  /* ── Typography Tokens ───────────────────────────────── */
+  --purelane-font-heading: 'Outfit', system-ui, -apple-system, sans-serif;
+  --purelane-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* =========================================================
+   BASE RESET & GLOBAL SCOPING
    ========================================================= */
 
 .purelane {
-    --purelane-bg: #031c1b;
-    --purelane-bg-deep: #011412;
-    --purelane-surface: #faf7fd;
-    --purelane-accent: #f0a03c;
-    --purelane-green: #8bc34a;
-    --purelane-purple: #4b3a8f;
-
-    --purelane-max-width: 1180px;
-    --purelane-radius: 24px;
-
-    position: relative;
-    color: var(--purelane-surface);
-    background: var(--purelane-bg);
+  position: relative;
+  color: var(--purelane-paper);
+  background: var(--purelane-bg);
+  font-family: var(--purelane-font-body);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
 }
 
 .purelane *,
 .purelane *::before,
 .purelane *::after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-.purelane img {
-    max-width: 100%;
-    height: auto;
+.purelane img,
+.purelane svg {
+  display: block;
+  max-width: 100%;
 }
 
 .purelane a {
-    color: inherit;
-    text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 .purelane button {
-    font: inherit;
-}
-
-.purelane-container {
-    width: 100%;
-    max-width: var(--purelane-max-width);
-    margin-inline: auto;
-    padding-inline: 18px;
-}
-
-.purelane-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-
-    min-height: 46px;
-    padding: 0 22px;
-
-    border-radius: 999px;
-    border: 0;
-
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease,
-        background 0.3s ease;
-}
-
-.purelane-btn--primary {
-    color: #08211a;
-    background: linear-gradient(135deg,
-            var(--purelane-green),
-            #5d8d1c);
-}
-
-.purelane-btn--ghost {
-    color: var(--purelane-surface);
-    background: rgba(236, 230, 247, 0.1);
-    border: 1px solid rgba(236, 230, 247, 0.3);
-}
-
-.purelane-btn:hover {
-    transform: translateY(-2px);
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
 }
 
 .purelane a:focus-visible,
 .purelane button:focus-visible {
-    outline: 2px solid var(--purelane-accent);
-    outline-offset: 4px;
+  outline: 2px solid var(--purelane-accent);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* =========================================================
+   TYPOGRAPHY SYSTEM
+   ========================================================= */
+
+.purelane-d1,
+.purelane-d2,
+.purelane-d3,
+.purelane-d4 {
+  font-family: var(--purelane-font-heading);
+  text-transform: uppercase;
+  letter-spacing: -0.018em;
+  font-weight: 800;
+  line-height: 0.87;
+  color: var(--purelane-surface);
+}
+
+.purelane-d1 { font-size: clamp(48px, 8.6vw, 112px); }
+.purelane-d2 { font-size: clamp(30px, 4.6vw, 54px); line-height: 0.94; }
+.purelane-d3 { font-size: clamp(21px, 2.5vw, 30px); line-height: 1.04; font-weight: 700; letter-spacing: -0.01em; }
+.purelane-d4 { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.14; font-weight: 700; letter-spacing: 0.005em; }
+
+.purelane-accent-text,
+.purelane-lime {
+  color: var(--purelane-accent);
+}
+
+.purelane-lede {
+  font-size: clamp(15px, 1.35vw, 17.5px);
+  color: var(--purelane-paper-soft);
+  max-width: 44ch;
+}
+
+.purelane-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--purelane-paper-muted);
+}
+
+/* =========================================================
+   CONTAINER & LAYOUT
+   ========================================================= */
+
+.purelane-container {
+  width: 100%;
+  max-width: var(--purelane-max-width);
+  margin-inline: auto;
+  padding-inline: 18px;
 }
 
 @media (max-width: 760px) {
-    .purelane-container {
-        padding-inline: 14px;
-    }
+  .purelane-container {
+    padding-inline: 14px;
+  }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* =========================================================
+   GLASSMORPHISM SURFACES
+   ========================================================= */
 
-    .purelane *,
-    .purelane *::before,
-    .purelane *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+.purelane-glass {
+  background: var(--purelane-glass-bg);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid var(--purelane-glass-line);
+  border-radius: var(--purelane-radius);
+  box-shadow: var(--purelane-glass-shadow), var(--purelane-glass-inset);
+  position: relative;
+  overflow: hidden;
+}
+
+.purelane-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.16), transparent 30%, transparent 72%, rgba(240, 160, 60, 0.07));
+}
+
+.purelane-glass-2 {
+  background: var(--purelane-glass-bg-alt);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  border: 1px solid rgba(236, 230, 247, 0.16);
+  border-radius: var(--purelane-radius);
+  box-shadow: 0 18px 48px rgba(18, 12, 34, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  position: relative;
+  overflow: hidden;
+}
+
+/* =========================================================
+   BUTTON SYSTEM
+   ========================================================= */
+
+.purelane-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: var(--purelane-radius-pill);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 0;
+  transition: transform 0.35s var(--purelane-ease), background 0.35s ease, box-shadow 0.35s ease;
+}
+
+.purelane-btn svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.purelane-btn--primary {
+  color: #08211a;
+  background: linear-gradient(135deg, var(--purelane-accent-dark), var(--purelane-green));
+  box-shadow: 0 12px 30px rgba(201, 118, 29, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.purelane-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(201, 118, 29, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.purelane-btn--ghost {
+  color: var(--purelane-surface);
+  background: rgba(236, 230, 247, 0.10);
+  border: 1px solid rgba(236, 230, 247, 0.30);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.purelane-btn--ghost:hover {
+  background: rgba(236, 230, 247, 0.18);
+  transform: translateY(-2px);
+}
+
+.purelane-btn--sm {
+  height: 38px;
+  min-height: 38px;
+  padding: 0 18px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+/* =========================================================
+   DIVIDERS & DECORATIONS
+   ========================================================= */
+
+.purelane-rule {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  max-width: 270px;
+  margin: 0 0 20px;
+}
+
+.purelane-rule i {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(236, 230, 247, 0.44), transparent);
+}
+
+.purelane-rule svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  color: var(--purelane-accent);
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .purelane *,
+  .purelane *::before,
+  .purelane *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

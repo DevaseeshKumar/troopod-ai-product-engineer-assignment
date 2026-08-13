@@ -4,10 +4,10 @@
    ========================================================= */
 
 :root {
-  --purelane-header-ink: #21183d;
-  --purelane-header-muted: #6d6880;
-  --purelane-header-purple: #4b3a8f;
-  --purelane-header-orange: #b8701c;
+  --purelane-header-ink: var(--purelane-ink, #21183d);
+  --purelane-header-muted: var(--purelane-paper-muted, #6d6880);
+  --purelane-header-purple: var(--purelane-purple, #4b3a8f);
+  --purelane-header-orange: var(--purelane-accent-dark, #b8701c);
   --purelane-header-glass: rgba(255, 255, 255, 0.78);
   --purelane-header-border: rgba(75, 58, 143, 0.14);
 

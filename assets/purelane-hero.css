@@ -3,20 +3,20 @@
    ===================================================== */
 
 .purelane-hero {
-  --hero-ink: #17102b;
-  --hero-deep: #241a3d;
-  --hero-brand: #4b3a8f;
-  --hero-brand-light: #6b55b8;
-  --hero-paper: #ece6f7;
-  --hero-paper-soft: rgba(236, 230, 247, 0.74);
-  --hero-paper-muted: rgba(236, 230, 247, 0.52);
-  --hero-accent: #f0a03c;
-  --hero-accent-dark: #c9761d;
-  --hero-surface: #faf7fd;
+  --hero-ink: var(--purelane-ink, #17102b);
+  --hero-deep: var(--purelane-deep, #241a3d);
+  --hero-brand: var(--purelane-purple, #4b3a8f);
+  --hero-brand-light: var(--purelane-purple-light, #6b55b8);
+  --hero-paper: var(--purelane-paper, #ece6f7);
+  --hero-paper-soft: var(--purelane-paper-soft, rgba(236, 230, 247, 0.74));
+  --hero-paper-muted: var(--purelane-paper-muted, rgba(236, 230, 247, 0.52));
+  --hero-accent: var(--purelane-accent, #f0a03c);
+  --hero-accent-dark: var(--purelane-accent-dark, #c9761d);
+  --hero-surface: var(--purelane-surface, #faf7fd);
 
-  --hero-max-width: 1180px;
-  --hero-radius: 26px;
-  --hero-ease: cubic-bezier(.2,.7,.2,1);
+  --hero-max-width: var(--purelane-max-width, 1180px);
+  --hero-radius: var(--purelane-radius, 26px);
+  --hero-ease: var(--purelane-ease, cubic-bezier(.2,.7,.2,1));
 
   position: relative;
   z-index: 2;
