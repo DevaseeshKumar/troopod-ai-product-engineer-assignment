@@ -1,14 +1,38 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
+    "purelane_hero": {
+      "type": "purelane-hero",
+      "settings": {
+        "heading_line_1": "Clean",
+        "heading_line_2": "That",
+        "heading_line_3": "Lasts",
+        "description": "Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it.",
+        "primary_label": "Shop now",
+        "primary_link": "shopify://collections/all",
+        "secondary_label": "How it works",
+        "secondary_link": "#how",
+
+        "product_1": "",
+        "product_2": "",
+        "product_3": "",
+
+        "offer_1_label": "Single bottle",
+        "offer_1_price": "₹200",
+        "offer_1_compare": "₹299",
+        "offer_1_note": "33% off",
+
+        "offer_2_label": "Any 2 products",
+        "offer_2_price": "₹349",
+        "offer_2_compare": "₹598",
+        "offer_2_note": "Save ₹249",
+
+        "offer_3_label": "Any 3 products",
+        "offer_3_price": "₹499",
+        "offer_3_compare": "₹897",
+        "offer_3_note": "Save ₹398"
+      }
+    },
+
     "image_banner": {
       "type": "image-banner",
       "blocks": {
@@ -48,6 +72,7 @@
         "show_text_below": false
       }
     },
+
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
@@ -77,7 +102,9 @@
       }
     }
   },
+
   "order": [
+    "purelane_hero",
     "image_banner",
     "featured_collection"
   ]
