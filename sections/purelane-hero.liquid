@@ -1,349 +1,131 @@
 {% liquid
-  assign product_1 = section.settings.product_1
-  assign product_2 = section.settings.product_2
-  assign product_3 = section.settings.product_3
+  assign p1_setting = section.settings.product_1
+  assign p2_setting = section.settings.product_2
+  assign p3_setting = section.settings.product_3
+
+  if p1_setting.featured_image != blank
+    assign product_1 = p1_setting
+  elsif p1_setting != blank
+    assign product_1 = all_products[p1_setting]
+  endif
+
+  if p2_setting.featured_image != blank
+    assign product_2 = p2_setting
+  elsif p2_setting != blank
+    assign product_2 = all_products[p2_setting]
+  endif
+
+  if p3_setting.featured_image != blank
+    assign product_3 = p3_setting
+  elsif p3_setting != blank
+    assign product_3 = all_products[p3_setting]
+  endif
 
   assign image_1 = product_1.featured_image
   assign image_2 = product_2.featured_image
   assign image_3 = product_3.featured_image
+
+  assign hero_description = section.settings.description | default: 'Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it.'
+  assign hero_description = hero_description | replace: 'made from plants.', 'made from<br>plants.'
+  assign hero_description = hero_description | replace: 'the world outside it.', 'the world<br>outside it.'
 %}
 
-<section
-  id="purelane-hero-{{ section.id }}"
-  class="purelane-hero"
-  data-purelane-hero
-  aria-labelledby="purelane-hero-title-{{ section.id }}"
->
-  <div class="purelane-hero__overlay"></div>
+<section class="hero" data-scene="1" id="top" data-purelane-hero>
+  <div class="hero-grid">
 
-  <div class="purelane-hero__container">
-
-    <!-- Product promises -->
-    <aside
-      class="purelane-hero__badges"
-      aria-label="Product promises"
-    >
-      <div class="purelane-hero__badge">
-        <span class="purelane-hero__badge-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/>
-            <path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/>
-          </svg>
+    <div class="badges glass-2" aria-label="Product promises">
+      <div class="badge">
+        <span class="bi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
         </span>
         <span>Plant<br>powered</span>
       </div>
-
-      <div class="purelane-hero__badge">
-        <span class="purelane-hero__badge-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M12 3 4.5 6v6.2c0 4.3 3.1 7.6 7.5 8.8 4.4-1.2 7.5-4.5 7.5-8.8V6L12 3Z"/>
-            <path d="m9 12 2.2 2.2L15.4 10"/>
-          </svg>
+      <div class="badge">
+        <span class="bi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v6.2c0 4.3 3.1 7.6 7.5 8.8 4.4-1.2 7.5-4.5 7.5-8.8V6L12 3Z"/><path d="m9 12 2.2 2.2L15.4 10"/></svg>
         </span>
         <span>Safe for<br>kids &amp; pets</span>
       </div>
-
-      <div class="purelane-hero__badge">
-        <span class="purelane-hero__badge-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <circle cx="12" cy="12" r="8.4"/>
-            <path d="M6.4 17.6 17.6 6.4"/>
-          </svg>
+      <div class="badge">
+        <span class="bi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M6.4 17.6 17.6 6.4"/></svg>
         </span>
         <span>Zero harsh<br>chemicals</span>
       </div>
-    </aside>
+    </div>
 
-    <!-- Hero copy -->
-    <div class="purelane-hero__copy">
-
-      {% if section.settings.eyebrow != blank %}
-        <p class="purelane-hero__eyebrow">
-          {{ section.settings.eyebrow | escape }}
-        </p>
-      {% endif %}
-
-      <h1
-        id="purelane-hero-title-{{ section.id }}"
-        class="purelane-hero__title"
-      >
-        {{ section.settings.heading_line_1 | escape }}<br>
-        {{ section.settings.heading_line_2 | escape }}<br>
-        <span>{{ section.settings.heading_line_3 | escape }}</span>
+    <div class="hero-copy">
+      <h1 class="d1 rv in">
+        {{ section.settings.heading_line_1 | default: 'Clean' }}<br>
+        {{ section.settings.heading_line_2 | default: 'That' }}<br>
+        <span class="lime">{{ section.settings.heading_line_3 | default: 'Lasts' }}</span>
       </h1>
-
-      <div class="purelane-hero__rule" aria-hidden="true">
+      <div class="rule rv rv-d1">
         <i></i>
-
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-          <path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/>
-          <path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/>
-        </svg>
-
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
         <i></i>
       </div>
-
-      {% if section.settings.description != blank %}
-        <p class="purelane-hero__description">
-          {{ section.settings.description }}
-        </p>
-      {% endif %}
-
-      <div class="purelane-hero__actions">
-
-        <a
-          class="purelane-hero__button purelane-hero__button--primary"
-          href="{{ section.settings.primary_link | default: '#shop' }}"
-        >
-          {{ section.settings.primary_label | escape }}
-
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M5 12h13"/>
-            <path d="m13 6 6 6-6 6"/>
-          </svg>
+      <p class="lede rv rv-d2">{{ hero_description }}</p>
+      <div class="hero-cta rv rv-d3">
+        <a class="btn btn-primary" href="{{ section.settings.primary_link | default: '#shop' }}">
+          {{ section.settings.primary_label | default: 'Shop now' }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>
         </a>
-
-        <a
-          class="purelane-hero__button purelane-hero__button--ghost"
-          href="{{ section.settings.secondary_link | default: '#how' }}"
-        >
-          {{ section.settings.secondary_label | escape }}
+        <a class="btn btn-ghost" href="{{ section.settings.secondary_link | default: '#how' }}">
+          {{ section.settings.secondary_label | default: 'How it works' }}
         </a>
-
       </div>
 
-      <!-- Mobile promises -->
-      <div class="purelane-hero__mobile-badges">
-
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/>
-            <path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/>
-          </svg>
+      <div class="badgestrip rv rv-d4">
+        <div class="glass-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
           Plant powered
         </div>
-
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M12 3 4.5 6v6.2c0 4.3 3.1 7.6 7.5 8.8 4.4-1.2 7.5-4.5 7.5-8.8V6L12 3Z"/>
-            <path d="m9 12 2.2 2.2L15.4 10"/>
-          </svg>
+        <div class="glass-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v6.2c0 4.3 3.1 7.6 7.5 8.8 4.4-1.2 7.5-4.5 7.5-8.8V6L12 3Z"/><path d="m9 12 2.2 2.2L15.4 10"/></svg>
           Kids &amp; pet safe
         </div>
-
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <circle cx="12" cy="12" r="8.4"/>
-            <path d="M6.4 17.6 17.6 6.4"/>
-          </svg>
+        <div class="glass-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M6.4 17.6 17.6 6.4"/></svg>
           Zero harsh chem
         </div>
-
       </div>
     </div>
 
-    <!-- Product stage -->
-    <div class="purelane-hero__product">
-
-      <div class="purelane-hero__stage">
-
-        <!-- Slide 1 -->
-        <div
-          class="purelane-hero__slide is-active"
-          data-hero-slide="1"
-          aria-hidden="false"
-        >
-          <div class="purelane-hero__composition purelane-hero__composition--single">
-            {% if image_1 %}
-              {{
-                image_1
-                | image_url: width: 900
-                | image_tag:
-                  loading: 'eager',
-                  fetchpriority: 'high',
-                  widths: '400,600,800,900',
-                  sizes: '(max-width: 900px) 80vw, 50vw',
-                  class: 'purelane-hero__product-image purelane-hero__product-image--solo purelane-hero__product-image--delay-1',
-                  alt: product_1.title
-              }}
-            {% else %}
-              <div class="purelane-hero__no-image">
-                {{ product_1.title | default: 'Product image' }}
-              </div>
-            {% endif %}
-          </div>
-
-          <div class="purelane-hero__price purelane-glass-2">
-            <span class="purelane-hero__price-label">
-              {{ section.settings.offer_1_label }}
-            </span>
-
-            <span class="purelane-hero__price-value">
-              <strong>{{ section.settings.offer_1_price }}</strong>
-
-              {% if section.settings.offer_1_compare != blank %}
-                <s>{{ section.settings.offer_1_compare }}</s>
-              {% endif %}
-            </span>
-
-            {% if section.settings.offer_1_note != blank %}
-              <span class="purelane-hero__price-save">
-                {{ section.settings.offer_1_note }}
-              </span>
-            {% endif %}
+    <div class="hero-prod" id="heroProd">
+      <div class="hstage" id="hstage">
+        <div class="hslide hs1 on" data-n="1">
+          <span class="hp p-kbtl a d1" role="img" aria-label="Purelane foaming kitchen cleaner spray bottle"></span>
+          <div class="glass-2 ptag">
+            <span class="lbl">{{ section.settings.offer_1_label | default: 'Single bottle' }}</span>
+            <span class="val"><strong>{{ section.settings.offer_1_price | default: '&#8377;200' }}</strong><s>{{ section.settings.offer_1_compare | default: '&#8377;299' }}</s></span>
+            <span class="cut">{{ section.settings.offer_1_note | default: '33% off' }}</span>
           </div>
         </div>
-
-        <!-- Slide 2 -->
-        <div
-          class="purelane-hero__slide"
-          data-hero-slide="2"
-          aria-hidden="true"
-        >
-          <div class="purelane-hero__composition purelane-hero__composition--duo">
-            {% if image_2 %}
-              {{
-                image_2
-                | image_url: width: 700
-                | image_tag:
-                  loading: 'eager',
-                  widths: '400,600,700',
-                  sizes: '(max-width: 900px) 55vw, 35vw',
-                  class: 'purelane-hero__product-image purelane-hero__product-image--secondary purelane-hero__product-image--delay-1',
-                  alt: product_2.title
-              }}
-            {% endif %}
-
-            {% if image_1 %}
-              {{
-                image_1
-                | image_url: width: 800
-                | image_tag:
-                  loading: 'eager',
-                  widths: '400,600,800',
-                  sizes: '(max-width: 900px) 65vw, 40vw',
-                  class: 'purelane-hero__product-image purelane-hero__product-image--primary purelane-hero__product-image--delay-2',
-                  alt: product_1.title
-              }}
-            {% endif %}
-          </div>
-
-          <div class="purelane-hero__price purelane-glass-2">
-            <span class="purelane-hero__price-label">
-              {{ section.settings.offer_2_label }}
-            </span>
-
-            <span class="purelane-hero__price-value">
-              <strong>{{ section.settings.offer_2_price }}</strong>
-
-              {% if section.settings.offer_2_compare != blank %}
-                <s>{{ section.settings.offer_2_compare }}</s>
-              {% endif %}
-            </span>
-
-            {% if section.settings.offer_2_note != blank %}
-              <span class="purelane-hero__price-save">
-                {{ section.settings.offer_2_note }}
-              </span>
-            {% endif %}
+        <div class="hslide hs2" data-n="2">
+          <span class="hp p-tbtl a d1" role="img" aria-label="Purelane tap cleaner and limescale remover spray bottle"></span>
+          <span class="hp p-kbtl b d2" role="img" aria-label="Purelane foaming kitchen cleaner spray bottle"></span>
+          <div class="glass-2 ptag">
+            <span class="lbl">{{ section.settings.offer_2_label | default: 'Any 2 products' }}</span>
+            <span class="val"><strong>{{ section.settings.offer_2_price | default: '&#8377;349' }}</strong><s>{{ section.settings.offer_2_compare | default: '&#8377;598' }}</s></span>
+            <span class="cut">{{ section.settings.offer_2_note | default: 'Save &#8377;249' }}</span>
           </div>
         </div>
-
-        <!-- Slide 3 -->
-        <div
-          class="purelane-hero__slide"
-          data-hero-slide="3"
-          aria-hidden="true"
-        >
-          <div class="purelane-hero__composition purelane-hero__composition--trio">
-            {% if image_2 %}
-              {{
-                image_2
-                | image_url: width: 700
-                | image_tag:
-                  loading: 'eager',
-                  widths: '400,600,700',
-                  sizes: '(max-width: 900px) 45vw, 30vw',
-                  class: 'purelane-hero__product-image purelane-hero__product-image--left purelane-hero__product-image--delay-1',
-                  alt: product_2.title
-              }}
-            {% endif %}
-
-            {% if image_3 %}
-              {{
-                image_3
-                | image_url: width: 800
-                | image_tag:
-                  loading: 'eager',
-                  widths: '400,600,800',
-                  sizes: '(max-width: 900px) 55vw, 35vw',
-                  class: 'purelane-hero__product-image purelane-hero__product-image--center purelane-hero__product-image--delay-2',
-                  alt: product_3.title
-              }}
-            {% endif %}
-
-            {% if image_1 %}
-              {{
-                image_1
-                | image_url: width: 700
-                | image_tag:
-                  loading: 'eager',
-                  widths: '400,600,700',
-                  sizes: '(max-width: 900px) 45vw, 30vw',
-                  class: 'purelane-hero__product-image purelane-hero__product-image--right purelane-hero__product-image--delay-3',
-                  alt: product_1.title
-              }}
-            {% endif %}
-          </div>
-
-          <div class="purelane-hero__price purelane-glass-2">
-            <span class="purelane-hero__price-label">
-              {{ section.settings.offer_3_label }}
-            </span>
-
-            <span class="purelane-hero__price-value">
-              <strong>{{ section.settings.offer_3_price }}</strong>
-
-              {% if section.settings.offer_3_compare != blank %}
-                <s>{{ section.settings.offer_3_compare }}</s>
-              {% endif %}
-            </span>
-
-            {% if section.settings.offer_3_note != blank %}
-              <span class="purelane-hero__price-save">
-                {{ section.settings.offer_3_note }}
-              </span>
-            {% endif %}
+        <div class="hslide hs3" data-n="3">
+          <span class="hp p-tbtl a d1" role="img" aria-label="Purelane tap cleaner and limescale remover spray bottle"></span>
+          <span class="hp p-mbtl b d2" role="img" aria-label="Purelane copper, bronze and brass cleaner pump bottle"></span>
+          <span class="hp p-kbtl c d3" role="img" aria-label="Purelane foaming kitchen cleaner spray bottle"></span>
+          <div class="glass-2 ptag">
+            <span class="lbl">{{ section.settings.offer_3_label | default: 'Any 3 products' }}</span>
+            <span class="val"><strong>{{ section.settings.offer_3_price | default: '&#8377;499' }}</strong><s>{{ section.settings.offer_3_compare | default: '&#8377;897' }}</s></span>
+            <span class="cut">{{ section.settings.offer_3_note | default: 'Save &#8377;398' }}</span>
           </div>
         </div>
-
       </div>
-
-      <!-- Slider dots -->
-      <div class="purelane-hero__dots" aria-label="Hero product offers">
-
-        <button
-          type="button"
-          class="is-active"
-          data-hero-dot="1"
-          aria-label="Show one product offer"
-          aria-current="true"
-        ></button>
-
-        <button
-          type="button"
-          data-hero-dot="2"
-          aria-label="Show two product offer"
-          aria-current="false"
-        ></button>
-
-        <button
-          type="button"
-          data-hero-dot="3"
-          aria-label="Show three product offer"
-          aria-current="false"
-        ></button>
-
+      <div class="hdots" id="hdots">
+        <button type="button" class="on" aria-label="Show 1 product"></button>
+        <button type="button" class="" aria-label="Show 2 products"></button>
+        <button type="button" class="" aria-label="Show 3 products"></button>
       </div>
     </div>
 
@@ -351,124 +133,55 @@
 </section>
 
 <script>
-  (() => {
-    /**
-     * Initialise (or reinitialise) a single Purelane hero section.
-     * Safe to call multiple times on the same element — cleans up first.
-     *
-     * @param {HTMLElement} section  The <section data-purelane-hero> element.
-     */
-    function purelaneHeroInit(section) {
-      if (!section) return;
-
-      /* ── clean up any previous run ─────────────────────────────── */
-      if (section._pHeroTimer) {
-        clearInterval(section._pHeroTimer);
-        section._pHeroTimer = null;
-      }
-
-      /* Remove old listeners by cloning interactive nodes */
-      if (section._pHeroHandlers) {
-        section.removeEventListener('mouseenter', section._pHeroHandlers.stop);
-        section.removeEventListener('mouseleave', section._pHeroHandlers.start);
-        section.removeEventListener('focusin', section._pHeroHandlers.stop);
-        section.removeEventListener('focusout', section._pHeroHandlers.start);
-        section._pHeroHandlers = null;
-      }
-
-      const oldDots = Array.from(section.querySelectorAll('[data-hero-dot]'));
-      oldDots.forEach(dot => {
-        const fresh = dot.cloneNode(true);
-        dot.parentNode.replaceChild(fresh, dot);
-      });
-
-      /* ── gather elements ────────────────────────────────────────── */
-      const slides = Array.from(section.querySelectorAll('[data-hero-slide]'));
-      const dots   = Array.from(section.querySelectorAll('[data-hero-dot]'));
-
+  (function() {
+    function initHeroRotator(root) {
+      if (!root) return;
+      const slides = root.querySelectorAll('.hslide');
+      const dots = root.querySelectorAll('.hdots button');
       if (!slides.length || !dots.length) return;
 
-      let current     = 0;
-      const reduceMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
+      let current = 0;
+      let timer = null;
 
-      /* ── core functions ─────────────────────────────────────────── */
-      function showSlide(index) {
+      function goTo(index) {
+        slides.forEach((s, i) => s.classList.toggle('on', i === index));
+        dots.forEach((d, i) => d.classList.toggle('on', i === index));
         current = index;
-
-        slides.forEach((slide, i) => {
-          const active = i === current;
-          slide.classList.toggle('is-active', active);
-          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
-        });
-
-        dots.forEach((dot, i) => {
-          const active = i === current;
-          dot.classList.toggle('is-active', active);
-          dot.setAttribute('aria-current', active ? 'true' : 'false');
-        });
       }
 
-      function startAutoplay() {
-        if (reduceMotion) return;
-        clearInterval(section._pHeroTimer);
-        section._pHeroTimer = setInterval(() => {
-          showSlide((current + 1) % slides.length);
-        }, 4200);
+      function next() {
+        goTo((current + 1) % slides.length);
       }
 
-      function stopAutoplay() {
-        clearInterval(section._pHeroTimer);
-      }
-
-      /* ── dot click ──────────────────────────────────────────────── */
-      dots.forEach((dot, index) => {
+      dots.forEach((dot, idx) => {
         dot.addEventListener('click', () => {
-          showSlide(index);
-          startAutoplay();
+          goTo(idx);
+          resetAuto();
         });
       });
 
-      /* ── pause on interaction ───────────────────────────────────── */
-      section._pHeroHandlers = { stop: stopAutoplay, start: startAutoplay };
-      section.addEventListener('mouseenter', section._pHeroHandlers.stop);
-      section.addEventListener('mouseleave', section._pHeroHandlers.start);
-      section.addEventListener('focusin', section._pHeroHandlers.stop);
-      section.addEventListener('focusout', section._pHeroHandlers.start);
+      function startAuto() {
+        if (!timer) timer = setInterval(next, 4500);
+      }
 
-      /* ── boot ───────────────────────────────────────────────────── */
-      showSlide(0);
-      startAutoplay();
+      function resetAuto() {
+        if (timer) clearInterval(timer);
+        timer = setInterval(next, 4500);
+      }
+
+      startAuto();
     }
 
-    /* ── page load ────────────────────────────────────────────────── */
-    document.querySelectorAll('[data-purelane-hero]').forEach(purelaneHeroInit);
-
-    /* ── Shopify Theme Editor: section reloaded ───────────────────── */
-    document.addEventListener('shopify:section:load', (event) => {
-      const section = event.target.querySelector('[data-purelane-hero]');
-      if (section) purelaneHeroInit(section);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-purelane-hero]').forEach(initHeroRotator);
     });
 
-    /* ── Shopify Theme Editor: section removed ────────────────────── */
-    document.addEventListener('shopify:section:unload', (event) => {
-      const section = event.target.querySelector('[data-purelane-hero]');
-      if (!section) return;
-
-      if (section._pHeroTimer) {
-        clearInterval(section._pHeroTimer);
-        section._pHeroTimer = null;
-      }
-
-      if (section._pHeroHandlers) {
-        section.removeEventListener('mouseenter', section._pHeroHandlers.stop);
-        section.removeEventListener('mouseleave', section._pHeroHandlers.start);
-        section.removeEventListener('focusin', section._pHeroHandlers.stop);
-        section.removeEventListener('focusout', section._pHeroHandlers.start);
-        section._pHeroHandlers = null;
-      }
-    });
+    if (window.Shopify && Shopify.designMode) {
+      document.addEventListener('shopify:section:load', (e) => {
+        const hero = e.target.querySelector('[data-purelane-hero]');
+        if (hero) initHeroRotator(hero);
+      });
+    }
   })();
 </script>
 
@@ -476,30 +189,24 @@
 {
   "name": "Purelane Hero",
   "tag": "section",
-  "class": "section-purelane-hero",
+  "class": "purelane-hero-section",
   "settings": [
     {
       "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow text",
-      "default": "Plant-powered homecare"
-    },
-    {
-      "type": "text",
       "id": "heading_line_1",
-      "label": "Heading line 1",
+      "label": "Heading Line 1",
       "default": "Clean"
     },
     {
       "type": "text",
       "id": "heading_line_2",
-      "label": "Heading line 2",
+      "label": "Heading Line 2",
       "default": "That"
     },
     {
       "type": "text",
       "id": "heading_line_3",
-      "label": "Heading line 3",
+      "label": "Heading Line 3 (Highlighted)",
       "default": "Lasts"
     },
     {
@@ -511,110 +218,122 @@
     {
       "type": "text",
       "id": "primary_label",
-      "label": "Primary button label",
+      "label": "Primary Button Label",
       "default": "Shop now"
     },
     {
       "type": "url",
       "id": "primary_link",
-      "label": "Primary button link"
+      "label": "Primary Button Link"
     },
     {
       "type": "text",
       "id": "secondary_label",
-      "label": "Secondary button label",
+      "label": "Secondary Button Label",
       "default": "How it works"
     },
     {
       "type": "url",
       "id": "secondary_link",
-      "label": "Secondary button link"
+      "label": "Secondary Button Link"
     },
     {
       "type": "product",
       "id": "product_1",
-      "label": "Hero product 1"
+      "label": "Product 1 (Single Offer)"
     },
     {
       "type": "product",
       "id": "product_2",
-      "label": "Hero product 2"
+      "label": "Product 2 (Duo Offer)"
     },
     {
       "type": "product",
       "id": "product_3",
-      "label": "Hero product 3"
+      "label": "Product 3 (Trio Offer)"
+    },
+    {
+      "type": "header",
+      "content": "Offer 1 Settings"
     },
     {
       "type": "text",
       "id": "offer_1_label",
-      "label": "Offer 1 label",
+      "label": "Offer 1 Label",
       "default": "Single bottle"
     },
     {
       "type": "text",
       "id": "offer_1_price",
-      "label": "Offer 1 price",
+      "label": "Offer 1 Price",
       "default": "₹200"
     },
     {
       "type": "text",
       "id": "offer_1_compare",
-      "label": "Offer 1 compare price",
+      "label": "Offer 1 Compare Price",
       "default": "₹299"
     },
     {
       "type": "text",
       "id": "offer_1_note",
-      "label": "Offer 1 note",
+      "label": "Offer 1 Discount Note",
       "default": "33% off"
+    },
+    {
+      "type": "header",
+      "content": "Offer 2 Settings"
     },
     {
       "type": "text",
       "id": "offer_2_label",
-      "label": "Offer 2 label",
+      "label": "Offer 2 Label",
       "default": "Any 2 products"
     },
     {
       "type": "text",
       "id": "offer_2_price",
-      "label": "Offer 2 price",
+      "label": "Offer 2 Price",
       "default": "₹349"
     },
     {
       "type": "text",
       "id": "offer_2_compare",
-      "label": "Offer 2 compare price",
+      "label": "Offer 2 Compare Price",
       "default": "₹598"
     },
     {
       "type": "text",
       "id": "offer_2_note",
-      "label": "Offer 2 note",
+      "label": "Offer 2 Discount Note",
       "default": "Save ₹249"
+    },
+    {
+      "type": "header",
+      "content": "Offer 3 Settings"
     },
     {
       "type": "text",
       "id": "offer_3_label",
-      "label": "Offer 3 label",
+      "label": "Offer 3 Label",
       "default": "Any 3 products"
     },
     {
       "type": "text",
       "id": "offer_3_price",
-      "label": "Offer 3 price",
+      "label": "Offer 3 Price",
       "default": "₹499"
     },
     {
       "type": "text",
       "id": "offer_3_compare",
-      "label": "Offer 3 compare price",
+      "label": "Offer 3 Compare Price",
       "default": "₹897"
     },
     {
       "type": "text",
       "id": "offer_3_note",
-      "label": "Offer 3 note",
+      "label": "Offer 3 Discount Note",
       "default": "Save ₹398"
     }
   ],
