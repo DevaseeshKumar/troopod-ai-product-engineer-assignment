@@ -6,107 +6,105 @@
         "heading_line_1": "Clean",
         "heading_line_2": "That",
         "heading_line_3": "Lasts",
-        "eyebrow": "Plant-powered homecare",
         "description": "Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it.",
         "primary_label": "Shop now",
-        "primary_link": "shopify://collections/all",
+        "primary_link": "#shop",
         "secondary_label": "How it works",
-        "secondary_link": "#how",
-
-        "product_1": "",
-        "product_2": "",
-        "product_3": "",
-
-        "offer_1_label": "Single bottle",
-        "offer_1_price": "₹200",
-        "offer_1_compare": "₹299",
-        "offer_1_note": "33% off",
-
-        "offer_2_label": "Any 2 products",
-        "offer_2_price": "₹349",
-        "offer_2_compare": "₹598",
-        "offer_2_note": "Save ₹249",
-
-        "offer_3_label": "Any 3 products",
-        "offer_3_price": "₹499",
-        "offer_3_compare": "₹897",
-        "offer_3_note": "Save ₹398"
+        "secondary_link": "#how"
       }
     },
-
-    "image_banner": {
-      "type": "image-banner",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
-          }
-        },
-        "button": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "button"
-      ],
+    "purelane_reviews": {
+      "type": "purelane-reviews",
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "kicker": "That's what they said",
+        "rating": "4.8",
+        "rating_subtitle": "from 8,000+ reviews",
+        "homes_count": "12 lakh+"
       }
     },
-
-    "featured_collection": {
-      "type": "featured-collection",
+    "purelane_ingredients": {
+      "type": "purelane-ingredients",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
+        "title": "Sourced from nature"
+      }
+    },
+    "purelane_pillars": {
+      "type": "purelane-pillars",
+      "settings": {}
+    },
+    "purelane_proof": {
+      "type": "purelane-proof",
+      "settings": {}
+    },
+    "purelane_combos": {
+      "type": "purelane-combos",
+      "settings": {
+        "kicker": "Pre-built to save you money",
+        "title": "Best selling combos",
+        "description": "Swipe through the boxes people order most. Each one is already priced below buying the same products on their own."
+      }
+    },
+    "purelane_bundles": {
+      "type": "purelane-bundles",
+      "settings": {
+        "kicker": "Build your bundle",
+        "title": "One box. Every room.",
+        "description": "Mix and match across kitchen, laundry, home and skin. One flat price, no code needed, free shipping either way."
+      }
+    },
+    "purelane_shop": {
+      "type": "purelane-shop",
+      "settings": {
+        "kicker": "Bestsellers",
+        "title": "Loved by 30,000 homes",
         "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "products_to_show": 8
       }
+    },
+    "purelane_range": {
+      "type": "purelane-range",
+      "settings": {}
+    },
+    "purelane_whybundles": {
+      "type": "purelane-whybundles",
+      "settings": {}
+    },
+    "purelane_categories": {
+      "type": "purelane-categories",
+      "settings": {}
+    },
+    "purelane_trust": {
+      "type": "purelane-trust",
+      "settings": {}
+    },
+    "purelane_signup": {
+      "type": "purelane-signup",
+      "settings": {}
+    },
+    "purelane_footer": {
+      "type": "purelane-footer",
+      "settings": {}
+    },
+    "purelane_sticky_cta": {
+      "type": "purelane-sticky-cta",
+      "settings": {}
     }
   },
-
   "order": [
     "purelane_hero",
-    "image_banner",
-    "featured_collection"
+    "purelane_reviews",
+    "purelane_ingredients",
+    "purelane_pillars",
+    "purelane_proof",
+    "purelane_combos",
+    "purelane_bundles",
+    "purelane_shop",
+    "purelane_range",
+    "purelane_whybundles",
+    "purelane_categories",
+    "purelane_trust",
+    "purelane_signup",
+    "purelane_footer",
+    "purelane_sticky_cta"
   ]
 }
