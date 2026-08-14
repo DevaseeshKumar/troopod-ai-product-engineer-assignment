@@ -1,19 +1,6 @@
 {% liquid
-  assign limit = section.settings.products_to_show | default: 8
-  assign products_list = nil
-
-  if section.settings.collection != blank
-    if section.settings.collection.products != blank
-      assign products_list = section.settings.collection.products
-    else
-      assign col_handle = section.settings.collection
-      assign products_list = collections[col_handle].products
-    endif
-  endif
-
-  if products_list == blank or products_list.size == 0
-    assign products_list = collections['all'].products
-  endif
+  assign product_limit = section.settings.products_to_show | default: 8
+  assign product_collection = section.settings.collection | default: collections['all']
 %}
 
 <section class="sec" id="shop" data-scene="3">
@@ -21,258 +8,25 @@
     <div class="panel-head rv">
       <span class="kicker">{{ section.settings.kicker | default: 'Bestsellers' }}</span>
       <h2 class="d2" style="margin-top:12px">{{ section.settings.title | default: 'Loved by 30,000 homes' }}</h2>
-      <div class="rule">
-        <i></i>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
-        <i></i>
-      </div>
+      <div class="rule" aria-hidden="true"><i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg><i></i></div>
     </div>
-
     <div class="shelf">
-      {% if products_list != blank and products_list.size > 0 %}
-        {% for product in products_list limit: limit %}
-          {% liquid
-            assign is_sold_out = false
-            unless product.available
-              assign is_sold_out = true
-            endunless
-
-            assign delay_class = ''
-            assign modulo = forloop.index0 | modulo: 4
-            if modulo == 1
-              assign delay_class = 'rv-d1'
-            elsif modulo == 2
-              assign delay_class = 'rv-d2'
-            elsif modulo == 3
-              assign delay_class = 'rv-d3'
-            endif
-          %}
-
-          <article class="glass card rv {{ delay_class }}">
-            <div class="shot">
-              {% if is_sold_out %}
-                <span class="pill" style="border-color: rgba(255, 100, 100, 0.5); color: #ff8888;">Sold out</span>
-              {% elsif forloop.index == 1 or forloop.index == 2 %}
-                <span class="pill">Best seller</span>
-              {% elsif forloop.index == 3 %}
-                <span class="pill">Top rated</span>
-              {% elsif forloop.index == 4 %}
-                <span class="pill">New</span>
-              {% endif %}
-
-              {% if product.featured_image != blank %}
-                <img src="{{ product.featured_image | image_url: width: 300 }}" alt="{{ product.title | escape }}" loading="lazy" style="height: 122px; width: auto; object-fit: contain;">
-              {% else %}
-                {% assign svg_index = forloop.index0 | modulo: 4 %}
-                {% if svg_index == 0 %}
-                  <span class="pimg p-tap" role="img" aria-label="{{ product.title | escape }}"></span>
-                {% elsif svg_index == 1 %}
-                  <span class="pimg p-kitchen" role="img" aria-label="{{ product.title | escape }}"></span>
-                {% elsif svg_index == 2 %}
-                  <span class="pimg p-metal" role="img" aria-label="{{ product.title | escape }}"></span>
-                {% else %}
-                  <span class="pimg p-wm" role="img" aria-label="{{ product.title | escape }}"></span>
-                {% endif %}
-              {% endif %}
-            </div>
-
-            <h4>{{ product.title }}</h4>
-
-            <div class="rate"><b>★ 4.8</b> · {{ forloop.index | times: 37 | plus: 180 }} reviews</div>
-
-            <div class="pr">
-              <strong>{{ product.price | money }}</strong>
-              {% if product.compare_at_price > product.price %}
-                <s>{{ product.compare_at_price | money }}</s>
-                {% assign savings = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
-                <em>{{ savings }}% off</em>
-              {% endif %}
-            </div>
-
-            {% if is_sold_out %}
-              <button class="btn btn-ghost btn-sm" disabled style="opacity:0.5; cursor:not-allowed;">Sold out</button>
-            {% else %}
-              <form method="post" action="/cart/add" data-purelane-ajax-cart>
-                <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
-                <button type="submit" class="btn btn-ghost btn-sm" style="width:100%;">Add to cart</button>
-              </form>
-            {% endif %}
-          </article>
-        {% endfor %}
+      {% for product in product_collection.products limit: product_limit %}
+        {% liquid
+          assign delay_class = ''
+          assign position = forloop.index0 | modulo: 4
+          if position == 1
+            assign delay_class = 'rv-d1'
+          elsif position == 2
+            assign delay_class = 'rv-d2'
+          elsif position == 3
+            assign delay_class = 'rv-d3'
+          endif
+        %}
+        {% render 'purelane-product-card', product: product, animation_delay: delay_class, button_label: section.settings.button_label %}
       {% else %}
-        <!-- Fallback cards (All 8 cards matching purelane-homepage.html 100%) -->
-        <article class="glass card rv">
-          <div class="shot"><span class="pill">Best seller</span><span class="pimg p-tap" role="img" aria-label="Tap cleaner and limescale remover spray with carton"></span></div>
-          <h4>Tap cleaner &amp; limescale remover</h4>
-          <div class="rate"><b>★ 4.8</b> · 237 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-        <article class="glass card rv rv-d1">
-          <div class="shot"><span class="pill">Best seller</span><span class="pimg p-kitchen" role="img" aria-label="Foaming kitchen cleaner spray with carton"></span></div>
-          <h4>Kitchen cleaner, foaming</h4>
-          <div class="rate"><b>★ 4.8</b> · 254 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-        <article class="glass card rv rv-d2">
-          <div class="shot"><span class="pill">Top rated</span><span class="pimg p-metal" role="img" aria-label="Copper, bronze and brass cleaner pump bottle with carton"></span></div>
-          <h4>Copper, bronze &amp; brass cleaner</h4>
-          <div class="rate"><b>★ 4.8</b> · 231 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-        <article class="glass card rv rv-d3">
-          <div class="shot"><span class="pill">New</span><span class="pimg p-wm" role="img" aria-label="Washing machine cleaner and descaler tablets carton"></span></div>
-          <h4>Washing machine cleaner &amp; descaler</h4>
-          <div class="rate"><b>★ 4.8</b> · 183 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-        <article class="glass card rv">
-          <div class="shot"><span class="pill">Best seller</span><svg viewBox="0 0 130 200" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="gTAPb" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#ffffff" stop-opacity=".10"/><stop offset=".18" stop-color="#ffffff" stop-opacity=".38"/>
-<stop offset=".5" stop-color="#dff3e4" stop-opacity=".10"/><stop offset=".82" stop-color="#ffffff" stop-opacity=".22"/>
-<stop offset="1" stop-color="#9fc7b4" stop-opacity=".32"/></linearGradient>
-<linearGradient id="gTAPl" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#04756e"/><stop offset=".55" stop-color="#4b3a8f"/><stop offset="1" stop-color="#013f3d"/></linearGradient>
-<linearGradient id="gTAPc" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#8fa89b"/><stop offset=".22" stop-color="#eef6ef"/><stop offset="1" stop-color="#7d938c"/></linearGradient>
-</defs>
-<ellipse cx="65" cy="190" rx="40" ry="7" fill="#01201c" opacity=".5"/>
-<path d="M40 60V48c0-7 5-12 12-12h13c8 0 13 6 13 13v11Z" fill="url(#gTAPc)"/>
-<path d="M65 37c11-1 19 3 25 10 3 4 2 9-2 10l-20 3Z" fill="#cfdcd2"/>
-<path d="M14 44h27v9H19c-4 0-6-2-6-4s1-5 1-5Z" fill="#cfdcd2"/>
-<path d="M44 52c-7 3-11 9-10 16 1 6 5 10 12 10v-6c-4 0-6-2-6-5s2-6 5-7Z" fill="#cfdcd2"/>
-<rect x="38" y="56" width="42" height="7" rx="3" fill="#a8bdb2"/>
-<rect x="41" y="62" width="36" height="16" rx="4" fill="url(#gTAPc)"/>
-<path d="M28 96c0-11 6-18 15-24v-8h33v8c9 6 15 13 15 24v62c0 12-8 20-21 20H49c-13 0-21-8-21-20Z" fill="url(#gTAPb)" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/>
-<rect x="31" y="112" width="66" height="60" rx="6" fill="url(#gTAPl)"/>
-<rect x="31" y="112" width="66" height="60" rx="6" fill="none" stroke="rgba(236,230,247,.26)" stroke-width="1"/>
-<g transform="translate(58 120) scale(.5)" fill="none" stroke="#f0a03c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-<path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></g>
-<text x="64" y="140" text-anchor="middle" font-family="Outfit, sans-serif" font-size="8.6" font-weight="800" letter-spacing=".7" fill="#faf7fd">PURELANE</text>
-<line x1="42" y1="146" x2="86" y2="146" stroke="#f0a03c" stroke-width=".9" opacity=".85"/>
-<text x="64" y="156" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">TAP CLEANER</text>
-<text x="64" y="164" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">LIMESCALE</text>
-<text x="64" y="171" text-anchor="middle" font-family="Inter, sans-serif" font-size="4.8" font-weight="600" letter-spacing=".9" fill="rgba(236,230,247,.7)">500 ML</text>
-<rect x="36" y="98" width="6" height="72" rx="3" fill="#ffffff" opacity=".3"/>
-<rect x="86" y="102" width="4" height="64" rx="2" fill="#ffffff" opacity=".18"/>
-</svg></div>
-          <h4>Tap cleaner &amp; limescale remover</h4>
-          <div class="rate"><b>★ 4.8</b> · 237 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-        <article class="glass card rv rv-d1">
-          <div class="shot"><span class="pill">Best seller</span><svg viewBox="0 0 130 200" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="gKITb" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#ffffff" stop-opacity=".10"/><stop offset=".18" stop-color="#ffffff" stop-opacity=".38"/>
-<stop offset=".5" stop-color="#dff3e4" stop-opacity=".10"/><stop offset=".82" stop-color="#ffffff" stop-opacity=".22"/>
-<stop offset="1" stop-color="#9fc7b4" stop-opacity=".32"/></linearGradient>
-<linearGradient id="gKITl" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#04756e"/><stop offset=".55" stop-color="#4b3a8f"/><stop offset="1" stop-color="#013f3d"/></linearGradient>
-<linearGradient id="gKITc" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#8fa89b"/><stop offset=".22" stop-color="#eef6ef"/><stop offset="1" stop-color="#7d938c"/></linearGradient>
-</defs>
-<ellipse cx="65" cy="190" rx="40" ry="7" fill="#01201c" opacity=".5"/>
-<path d="M40 60V48c0-7 5-12 12-12h13c8 0 13 6 13 13v11Z" fill="url(#gKITc)"/>
-<path d="M65 37c11-1 19 3 25 10 3 4 2 9-2 10l-20 3Z" fill="#cfdcd2"/>
-<path d="M14 44h27v9H19c-4 0-6-2-6-4s1-5 1-5Z" fill="#cfdcd2"/>
-<path d="M44 52c-7 3-11 9-10 16 1 6 5 10 12 10v-6c-4 0-6-2-6-5s2-6 5-7Z" fill="#cfdcd2"/>
-<rect x="38" y="56" width="42" height="7" rx="3" fill="#a8bdb2"/>
-<rect x="41" y="62" width="36" height="16" rx="4" fill="url(#gKITc)"/>
-<path d="M28 96c0-11 6-18 15-24v-8h33v8c9 6 15 13 15 24v62c0 12-8 20-21 20H49c-13 0-21-8-21-20Z" fill="url(#gKITb)" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/>
-<rect x="31" y="112" width="66" height="60" rx="6" fill="url(#gKITl)"/>
-<rect x="31" y="112" width="66" height="60" rx="6" fill="none" stroke="rgba(236,230,247,.26)" stroke-width="1"/>
-<g transform="translate(58 120) scale(.5)" fill="none" stroke="#f0a03c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-<path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></g>
-<text x="64" y="140" text-anchor="middle" font-family="Outfit, sans-serif" font-size="8.6" font-weight="800" letter-spacing=".7" fill="#faf7fd">PURELANE</text>
-<line x1="42" y1="146" x2="86" y2="146" stroke="#f0a03c" stroke-width=".9" opacity=".85"/>
-<text x="64" y="156" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">KITCHEN</text>
-<text x="64" y="164" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">CLEANER</text>
-<text x="64" y="171" text-anchor="middle" font-family="Inter, sans-serif" font-size="4.8" font-weight="600" letter-spacing=".9" fill="rgba(236,230,247,.7)">500 ML</text>
-<rect x="36" y="98" width="6" height="72" rx="3" fill="#ffffff" opacity=".3"/>
-<rect x="86" y="102" width="4" height="64" rx="2" fill="#ffffff" opacity=".18"/>
-</svg></div>
-          <h4>Kitchen cleaner, foaming</h4>
-          <div class="rate"><b>★ 4.8</b> · 254 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-        <article class="glass card rv rv-d2">
-          <div class="shot"><span class="pill">Top rated</span><svg viewBox="0 0 130 200" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="gCOPb" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#ffffff" stop-opacity=".10"/><stop offset=".18" stop-color="#ffffff" stop-opacity=".38"/>
-<stop offset=".5" stop-color="#dff3e4" stop-opacity=".10"/><stop offset=".82" stop-color="#ffffff" stop-opacity=".22"/>
-<stop offset="1" stop-color="#9fc7b4" stop-opacity=".32"/></linearGradient>
-<linearGradient id="gCOPl" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#04756e"/><stop offset=".55" stop-color="#4b3a8f"/><stop offset="1" stop-color="#013f3d"/></linearGradient>
-<linearGradient id="gCOPc" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#8fa89b"/><stop offset=".22" stop-color="#eef6ef"/><stop offset="1" stop-color="#7d938c"/></linearGradient>
-</defs>
-<ellipse cx="65" cy="190" rx="40" ry="7" fill="#01201c" opacity=".5"/>
-<path d="M40 60V48c0-7 5-12 12-12h13c8 0 13 6 13 13v11Z" fill="url(#gCOPc)"/>
-<path d="M65 37c11-1 19 3 25 10 3 4 2 9-2 10l-20 3Z" fill="#cfdcd2"/>
-<path d="M14 44h27v9H19c-4 0-6-2-6-4s1-5 1-5Z" fill="#cfdcd2"/>
-<path d="M44 52c-7 3-11 9-10 16 1 6 5 10 12 10v-6c-4 0-6-2-6-5s2-6 5-7Z" fill="#cfdcd2"/>
-<rect x="38" y="56" width="42" height="7" rx="3" fill="#a8bdb2"/>
-<rect x="41" y="62" width="36" height="16" rx="4" fill="url(#gCOPc)"/>
-<path d="M28 96c0-11 6-18 15-24v-8h33v8c9 6 15 13 15 24v62c0 12-8 20-21 20H49c-13 0-21-8-21-20Z" fill="url(#gCOPb)" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/>
-<rect x="31" y="112" width="66" height="60" rx="6" fill="url(#gCOPl)"/>
-<rect x="31" y="112" width="66" height="60" rx="6" fill="none" stroke="rgba(236,230,247,.26)" stroke-width="1"/>
-<g transform="translate(58 120) scale(.5)" fill="none" stroke="#f0a03c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-<path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></g>
-<text x="64" y="140" text-anchor="middle" font-family="Outfit, sans-serif" font-size="8.6" font-weight="800" letter-spacing=".7" fill="#faf7fd">PURELANE</text>
-<line x1="42" y1="146" x2="86" y2="146" stroke="#f0a03c" stroke-width=".9" opacity=".85"/>
-<text x="64" y="156" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">COPPER BRASS</text>
-<text x="64" y="164" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">&amp; BRONZE</text>
-<text x="64" y="171" text-anchor="middle" font-family="Inter, sans-serif" font-size="4.8" font-weight="600" letter-spacing=".9" fill="rgba(236,230,247,.7)">300 ML</text>
-<rect x="36" y="98" width="6" height="72" rx="3" fill="#ffffff" opacity=".3"/>
-<rect x="86" y="102" width="4" height="64" rx="2" fill="#ffffff" opacity=".18"/>
-</svg></div>
-          <h4>Copper, bronze &amp; brass cleaner</h4>
-          <div class="rate"><b>★ 4.8</b> · 231 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-        <article class="glass card rv rv-d3">
-          <div class="shot"><span class="pill">New</span><svg viewBox="0 0 130 200" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="tb" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#ffffff" stop-opacity=".12"/><stop offset=".2" stop-color="#ffffff" stop-opacity=".4"/>
-<stop offset=".54" stop-color="#dff3e4" stop-opacity=".10"/><stop offset="1" stop-color="#9fc7b4" stop-opacity=".32"/></linearGradient>
-<linearGradient id="tl" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#04756e"/><stop offset=".55" stop-color="#4b3a8f"/><stop offset="1" stop-color="#013f3d"/></linearGradient>
-<linearGradient id="tc" x1="0" y1="0" x2="1" y2="0">
-<stop offset="0" stop-color="#8fa89b"/><stop offset=".24" stop-color="#eef6ef"/><stop offset="1" stop-color="#7d938c"/></linearGradient>
-</defs>
-<ellipse cx="65" cy="190" rx="42" ry="7" fill="#01201c" opacity=".5"/>
-<rect x="30" y="46" width="70" height="20" rx="7" fill="url(#tc)"/>
-<ellipse cx="65" cy="46" rx="35" ry="8" fill="#f2f8f2"/>
-<path d="M28 66h74v100c0 11-8 18-20 18H48c-12 0-20-7-20-18Z" fill="url(#tb)" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/>
-<rect x="31" y="96" width="68" height="62" rx="6" fill="url(#tl)"/>
-<rect x="31" y="96" width="68" height="62" rx="6" fill="none" stroke="rgba(236,230,247,.26)" stroke-width="1"/>
-<g transform="translate(58 104) scale(.5)" fill="none" stroke="#f0a03c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-<path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></g>
-<text x="65" y="124" text-anchor="middle" font-family="Outfit, sans-serif" font-size="8.6" font-weight="800" letter-spacing=".7" fill="#faf7fd">PURELANE</text>
-<line x1="43" y1="130" x2="87" y2="130" stroke="#f0a03c" stroke-width=".9" opacity=".85"/>
-<text x="65" y="140" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">WASHING MC</text>
-<text x="65" y="148" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.1" fill="#ece6f7">DESCALER</text>
-<text x="65" y="155" text-anchor="middle" font-family="Inter, sans-serif" font-size="4.8" font-weight="600" letter-spacing=".9" fill="rgba(236,230,247,.7)">8 TABLETS</text>
-<rect x="36" y="76" width="6" height="80" rx="3" fill="#ffffff" opacity=".3"/>
-<rect x="88" y="82" width="4" height="70" rx="2" fill="#ffffff" opacity=".18"/>
-</svg></div>
-          <h4>Washing machine cleaner &amp; descaler</h4>
-          <div class="rate"><b>★ 4.8</b> · 183 reviews</div>
-          <div class="pr"><strong>₹200</strong><s>₹299</s><em>33% off</em></div>
-          <button class="btn btn-ghost btn-sm">Add to cart</button>
-        </article>
-      {% endif %}
+        <p class="body-s">{{ section.settings.empty_message | default: 'Add products to the selected collection to populate this shelf.' }}</p>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -283,37 +37,13 @@
   "tag": "section",
   "class": "purelane-shop-section",
   "settings": [
-    {
-      "type": "text",
-      "id": "kicker",
-      "label": "Kicker",
-      "default": "Bestsellers"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Section Title",
-      "default": "Loved by 30,000 homes"
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "min": 4,
-      "max": 12,
-      "step": 2,
-      "label": "Products to show",
-      "default": 8
-    }
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Bestsellers" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Loved by 30,000 homes" },
+    { "type": "collection", "id": "collection", "label": "Product collection" },
+    { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 1, "max": 12, "step": 1, "default": 8 },
+    { "type": "text", "id": "button_label", "label": "Add button label", "default": "Add to cart" },
+    { "type": "text", "id": "empty_message", "label": "Empty collection message", "default": "Add products to the selected collection to populate this shelf." }
   ],
-  "presets": [
-    {
-      "name": "Purelane Shop Grid"
-    }
-  ]
+  "presets": [{ "name": "Purelane Shop Grid" }]
 }
 {% endschema %}

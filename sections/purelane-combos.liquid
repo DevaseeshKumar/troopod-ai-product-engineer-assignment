@@ -8,35 +8,78 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
         <i></i>
       </div>
-      <p class="lede combo-intro" style="margin:14px auto 0"><span>Swipe through the boxes people order most. Each one is</span><br><span>already priced below buying the same products on their</span><br>own.</p>
+      <p class="lede combo-intro" style="margin:14px auto 0">{{ section.settings.description | default: 'Swipe through the boxes people order most. Each one is already priced below buying the same products on their own.' }}</p>
     </div>
 
     <div class="comborail rv">
       {% if section.blocks.size > 0 %}
         {% for block in section.blocks %}
           {% liquid
-            assign setting_prod = block.settings.product
-            if setting_prod.title != blank
-              assign combo_product = setting_prod
-            elsif setting_prod != blank
-              assign combo_product = all_products[setting_prod]
+            assign combo_products = block.settings.products
+            assign bundle_product = block.settings.bundle_product
+            if combo_products == blank and block.settings.product != blank
+              assign combo_products = block.settings.product
             endif
+
+            assign combo_count = 0
+            assign combo_total_price = 0
+            assign combo_total_compare = 0
+
+            for product in combo_products
+              assign combo_count = combo_count | plus: 1
+              assign combo_total_price = combo_total_price | plus: product.price
+              assign product_compare = product.compare_at_price | default: product.price
+              assign combo_total_compare = combo_total_compare | plus: product_compare
+            endfor
+
+            if combo_count == 0
+              assign combo_total_price = 0
+              assign combo_total_compare = 0
+            endif
+
             assign is_featured = block.settings.is_featured
+            assign combo_price_text = combo_total_price | money
+            assign combo_compare_text = ''
+            if bundle_product != blank
+              assign combo_price_text = bundle_product.price | money
+              if bundle_product.compare_at_price > bundle_product.price
+                assign combo_compare_text = bundle_product.compare_at_price | money
+              endif
+            elsif combo_total_compare > combo_total_price
+              assign combo_compare_text = combo_total_compare | money
+            endif
+            assign combo_savings_text = ''
+            if bundle_product != blank and bundle_product.compare_at_price > bundle_product.price
+              assign savings_value = bundle_product.compare_at_price | minus: bundle_product.price
+              assign combo_savings_text = 'Save ' | append: savings_value | money
+            elsif combo_total_compare > combo_total_price
+              assign savings_value = combo_total_compare | minus: combo_total_price
+              assign combo_savings_text = 'Save ' | append: savings_value | money
+            endif
           %}
           <article class="glass combo {% if is_featured %}hero-combo{% endif %}" {{ block.shopify_attributes }}>
             <div class="tray">
-              {% if block.settings.savings_tag != blank %}
-                <span class="save">{{ block.settings.savings_tag }}</span>
+              {% if combo_savings_text != blank %}
+                <span class="save">{{ combo_savings_text }}</span>
               {% endif %}
               {% if block.settings.flag != blank %}
                 <span class="flag">{{ block.settings.flag }}</span>
               {% endif %}
               <div class="stack">
-                {% if combo_product != blank and combo_product.featured_image != blank %}
-                  <span class="it">
-                    <img src="{{ combo_product.featured_image | image_url: width: 200 }}" alt="{{ combo_product.title | escape }}" class="pimg" style="height:66px; margin:0 auto 8px; object-fit:contain;">
-                    <span>{{ combo_product.title }}</span>
-                  </span>
+                {% if combo_products != blank %}
+                  {% for product in combo_products %}
+                    {% if product != blank %}
+                      <span class="it">
+                        {% if product.featured_image != blank %}
+                          <img src="{{ product.featured_image | image_url: width: 200 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" loading="lazy" class="pimg" style="height:66px; margin:0 auto 8px; object-fit:contain;">
+                        {% else %}
+                          <span class="product-media-fallback product-media-fallback--small" aria-label="No image available"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l1 4v13H6V7l1-4Z"/></svg></span>
+                        {% endif %}
+                        <span>{{ product.title }}</span>
+                      </span>
+                      {% unless forloop.last %}<span class="plus" aria-hidden="true">+</span>{% endunless %}
+                    {% endif %}
+                  {% endfor %}
                 {% else %}
                   <span class="it"><span class="pimg p-kitchen" role="img" aria-label="Kitchen cleaner"></span><span>Cuts grease</span></span>
                   <span class="plus" aria-hidden="true">+</span>
@@ -47,26 +90,31 @@
               </div>
             </div>
             <div class="body">
-              <h3>{{ block.settings.title | default: combo_product.title | default: 'Kitchen essentials' }}</h3>
-              <div class="cnt">{{ block.settings.count_label | default: '3 products' }}</div>
+              <h3>{{ block.settings.title | default: 'Kitchen essentials' }}</h3>
+              <div class="cnt">{% if combo_count > 0 %}{{ combo_count }} products{% else %}{{ block.settings.count_label | default: '3 products' }}{% endif %}</div>
               {% if forloop.first %}
                 <p class="inc combo-inc--kitchen"><span>Includes: Foaming Kitchen Cleaner, Dishwash</span><br><span>Gel &amp; Tap Cleaner. Everything for a sparkling</span><br><span>kitchen, no need to pick separately.</span></p>
               {% else %}
                 <p class="inc">{{ block.settings.includes_text | default: 'Includes: Foaming Kitchen Cleaner, Dishwash Gel & Tap Cleaner. Everything for a sparkling kitchen.' }}</p>
               {% endif %}
               <div class="prow">
-                <strong>{{ block.settings.price | default: combo_product.price | money }}</strong>
-                {% if block.settings.compare_price != blank %}<s>{{ block.settings.compare_price }}</s>{% endif %}
-                {% if block.settings.savings_note != blank %}<em>{{ block.settings.savings_note }}</em>{% endif %}
+                <strong>{% if combo_price_text != blank %}{{ combo_price_text }}{% else %}{{ 0 | money }}{% endif %}</strong>
+                {% if combo_compare_text != blank %}<s>{{ combo_compare_text }}</s>{% endif %}
+                {% if combo_total_compare > combo_total_price and combo_savings_text != blank %}<em>{{ combo_savings_text }}</em>{% endif %}
               </div>
               <div class="fine">Inclusive of all taxes &middot; COD available</div>
-              {% if combo_product != blank %}
-                <form method="post" action="/cart/add" data-purelane-ajax-cart>
-                  <input type="hidden" name="id" value="{{ combo_product.first_available_variant.id }}">
+              {% if bundle_product != blank %}
+                <form method="post" action="{{ routes.cart_add_url }}">
+                  <input type="hidden" name="id" value="{{ bundle_product.selected_or_first_available_variant.id }}">
                   <button type="submit" class="btn btn-ghost" style="width:100%;">
                     Shop bundle
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>
                   </button>
+                </form>
+              {% elsif combo_products != blank %}
+                <form method="post" action="{{ routes.cart_add_url }}">
+                  {% for product in combo_products %}{% if product != blank and product.selected_or_first_available_variant != blank %}<input type="hidden" name="items[{{ forloop.index0 }}][id]" value="{{ product.selected_or_first_available_variant.id }}">{% endif %}{% endfor %}
+                  <button type="submit" class="btn btn-ghost" style="width:100%;">Add selected products</button>
                 </form>
               {% else %}
                 <a class="btn btn-ghost" href="#bundles">
@@ -220,10 +268,12 @@
       "type": "combo",
       "name": "Combo Product",
       "settings": [
+        { "type": "product", "id": "bundle_product", "label": "Bundle product (recommended)" },
         {
-          "type": "product",
-          "id": "product",
-          "label": "Shopify Product"
+          "type": "product_list",
+          "id": "products",
+          "label": "Products in this combo",
+          "limit": 8
         },
         {
           "type": "text",

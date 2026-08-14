@@ -18,6 +18,22 @@
       {% if section.blocks.size > 0 %}
         {% for block in section.blocks %}
           {% liquid
+            assign bundle_products = block.settings.products
+            assign bundle_product = block.settings.bundle_product
+            if bundle_products == blank and block.settings.product != blank
+              assign bundle_products = block.settings.product
+            endif
+
+            assign bundle_count = 0
+            assign bundle_total_price = 0
+            assign bundle_total_compare = 0
+            for product in bundle_products
+              assign bundle_count = bundle_count | plus: 1
+              assign bundle_total_price = bundle_total_price | plus: product.price
+              assign product_compare = product.compare_at_price | default: product.price
+              assign bundle_total_compare = bundle_total_compare | plus: product_compare
+            endfor
+
             assign is_featured = block.settings.is_featured
             assign delay_class = ''
             if forloop.index == 2
@@ -25,34 +41,36 @@
             elsif forloop.index == 3
               assign delay_class = 'rv-d3'
             endif
+
+            if bundle_count > 0
+              assign displayed_count = bundle_count
+            else
+              assign displayed_count = block.settings.qty | default: '2'
+            endif
           %}
           <article class="glass tier {% if is_featured %}best{% endif %} rv {{ delay_class }}" {{ block.shopify_attributes }}>
             {% if block.settings.tag != blank %}
               <span class="tag">{{ block.settings.tag }}</span>
             {% endif %}
 
-            <div class="tierpix" aria-hidden="true">
-              {% if forloop.index == 1 %}
-                <span class="pimg p-combo2" role="img" aria-label="Combo preview"></span>
-              {% elsif forloop.index == 2 %}
-                <span class="pimg p-kitchen" role="img" aria-label="Kitchen cleaner"></span>
-                <span class="pimg p-tap" role="img" aria-label="Tap cleaner"></span>
-                <span class="pimg p-dish" role="img" aria-label="Dishwash gel"></span>
+            <div class="tierpix{% if bundle_count > 3 %} five{% endif %}" aria-hidden="true">
+              {% if bundle_products != blank %}
+                {% for product in bundle_products limit: 5 %}
+                  {% if product.featured_image != blank %}
+                    {{ product.featured_image | image_url: width: 200 | image_tag: alt: '', loading: 'lazy', class: 'pimg' }}
+                  {% else %}
+                    <span class="product-media-fallback product-media-fallback--small"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l1 4v13H6V7l1-4Z"/></svg></span>
+                  {% endif %}
+                {% endfor %}
               {% else %}
-                <div class="tierpix five" aria-hidden="true">
-                  <span class="pimg p-kitchen" role="img" aria-label="Kitchen cleaner"></span>
-                  <span class="pimg p-tap" role="img" aria-label="Tap cleaner"></span>
-                  <span class="pimg p-floor" role="img" aria-label="Floor cleaner"></span>
-                  <span class="pimg p-toilet" role="img" aria-label="Toilet cleaner"></span>
-                  <span class="pimg p-laundry" role="img" aria-label="Laundry detergent"></span>
-                </div>
+                <span class="pimg p-combo2"></span>
               {% endif %}
             </div>
 
-            <div class="qty">{{ block.settings.qty | default: '2' }}<small>{{ block.settings.qty_unit | default: 'Products' }}</small></div>
+            <div class="qty">{{ displayed_count }}<small>{{ block.settings.qty_unit | default: 'Products' }}</small></div>
             <div class="price">
-              {{ block.settings.price | default: '₹349' }}
-              {% if block.settings.compare_price != blank %}<s>{{ block.settings.compare_price }}</s>{% endif %}
+              {% if bundle_product != blank %}{{ bundle_product.price | money }}{% elsif bundle_total_price > 0 %}{{ bundle_total_price | money }}{% else %}{{ block.settings.price | default: '₹349' }}{% endif %}
+              {% if bundle_product.compare_at_price > bundle_product.price %}<s>{{ bundle_product.compare_at_price | money }}</s>{% elsif bundle_total_compare > bundle_total_price %}<s>{{ bundle_total_compare | money }}</s>{% endif %}
             </div>
             {% if block.settings.unit_price != blank %}
               <p class="body-s" style="font-size:12px">{{ block.settings.unit_price }}</p>
@@ -70,12 +88,28 @@
               {% endif %}
             </ul>
 
-            <a class="btn {% if is_featured %}btn-primary{% else %}btn-ghost{% endif %}" href="{{ block.settings.button_link | default: '#shop' }}">
-              {{ block.settings.button_label | default: 'Build this box' }}
+            {% if bundle_product != blank %}
+              <form method="post" action="{{ routes.cart_add_url }}"><input type="hidden" name="id" value="{{ bundle_product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="btn {% if is_featured %}btn-primary{% else %}btn-ghost{% endif %}">{{ block.settings.button_label | default: 'Build this box' }}</button>
+              </form>
+            {% elsif bundle_products != blank %}
+              <form method="post" action="{{ routes.cart_add_url }}">
+                {% for product in bundle_products %}
+                  {% if product.selected_or_first_available_variant != blank %}<input type="hidden" name="items[{{ forloop.index0 }}][id]" value="{{ product.selected_or_first_available_variant.id }}">{% endif %}
+                {% endfor %}
+                <button type="submit" class="btn {% if is_featured %}btn-primary{% else %}btn-ghost{% endif %}">
+                  {{ block.settings.button_label | default: 'Build this box' }}
+                  {% if is_featured %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>{% endif %}
+                </button>
+              </form>
+            {% else %}
+              <a class="btn {% if is_featured %}btn-primary{% else %}btn-ghost{% endif %}" href="{{ block.settings.button_link | default: '#shop' }}">
+                {{ block.settings.button_label | default: 'Build this box' }}
               {% if is_featured %}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>
               {% endif %}
-            </a>
+              </a>
+            {% endif %}
           </article>
         {% endfor %}
       {% else %}
@@ -154,6 +188,13 @@
       "type": "tier",
       "name": "Bundle Tier",
       "settings": [
+        { "type": "product", "id": "bundle_product", "label": "Bundle product (recommended)" },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Products in this bundle",
+          "limit": 12
+        },
         {
           "type": "text",
           "id": "tag",

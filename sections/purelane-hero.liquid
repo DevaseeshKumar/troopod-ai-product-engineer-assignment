@@ -95,16 +95,16 @@
     <div class="hero-prod" id="heroProd">
       <div class="hstage" id="hstage">
         <div class="hslide hs1 on" data-n="1">
-          <span class="hp p-kbtl a d1" role="img" aria-label="Purelane foaming kitchen cleaner spray bottle"></span>
+          {% if image_1 != blank %}{{ image_1 | image_url: width: 900 | image_tag: alt: product_1.title, loading: 'eager', widths: '360, 540, 720, 900', class: 'hp hp--photo a d1' }}{% else %}<span class="hp p-kbtl a d1" role="img" aria-label="Product image placeholder"></span>{% endif %}
           <div class="glass-2 ptag">
             <span class="lbl">{{ section.settings.offer_1_label | default: 'Single bottle' }}</span>
-            <span class="val"><strong>{{ section.settings.offer_1_price | default: '&#8377;200' }}</strong><s>{{ section.settings.offer_1_compare | default: '&#8377;299' }}</s></span>
+            <span class="val"><strong>{% if product_1 != blank %}{{ product_1.price | money }}{% else %}{{ section.settings.offer_1_price | default: '₹200' }}{% endif %}</strong>{% if product_1.compare_at_price > product_1.price %}<s>{{ product_1.compare_at_price | money }}</s>{% elsif section.settings.offer_1_compare != blank %}<s>{{ section.settings.offer_1_compare }}</s>{% endif %}</span>
             <span class="cut">{{ section.settings.offer_1_note | default: '33% off' }}</span>
           </div>
         </div>
         <div class="hslide hs2" data-n="2">
-          <span class="hp p-tbtl a d1" role="img" aria-label="Purelane tap cleaner and limescale remover spray bottle"></span>
-          <span class="hp p-kbtl b d2" role="img" aria-label="Purelane foaming kitchen cleaner spray bottle"></span>
+          {% if image_2 != blank %}{{ image_2 | image_url: width: 900 | image_tag: alt: product_2.title, loading: 'lazy', widths: '360, 540, 720, 900', class: 'hp hp--photo b d2' }}{% else %}<span class="hp p-kbtl b d2" role="img" aria-label="Product image placeholder"></span>{% endif %}
+          {% if image_1 != blank %}{{ image_1 | image_url: width: 720 | image_tag: alt: product_1.title, loading: 'lazy', widths: '320, 480, 720', class: 'hp hp--photo a d1' }}{% else %}<span class="hp p-tbtl a d1" role="img" aria-label="Product image placeholder"></span>{% endif %}
           <div class="glass-2 ptag">
             <span class="lbl">{{ section.settings.offer_2_label | default: 'Any 2 products' }}</span>
             <span class="val"><strong>{{ section.settings.offer_2_price | default: '&#8377;349' }}</strong><s>{{ section.settings.offer_2_compare | default: '&#8377;598' }}</s></span>
@@ -112,9 +112,9 @@
           </div>
         </div>
         <div class="hslide hs3" data-n="3">
-          <span class="hp p-tbtl a d1" role="img" aria-label="Purelane tap cleaner and limescale remover spray bottle"></span>
-          <span class="hp p-mbtl b d2" role="img" aria-label="Purelane copper, bronze and brass cleaner pump bottle"></span>
-          <span class="hp p-kbtl c d3" role="img" aria-label="Purelane foaming kitchen cleaner spray bottle"></span>
+          {% if image_1 != blank %}{{ image_1 | image_url: width: 720 | image_tag: alt: product_1.title, loading: 'lazy', widths: '320, 480, 720', class: 'hp hp--photo a d1' }}{% else %}<span class="hp p-tbtl a d1" role="img" aria-label="Product image placeholder"></span>{% endif %}
+          {% if image_3 != blank %}{{ image_3 | image_url: width: 720 | image_tag: alt: product_3.title, loading: 'lazy', widths: '320, 480, 720', class: 'hp hp--photo b d2' }}{% else %}<span class="hp p-mbtl b d2" role="img" aria-label="Product image placeholder"></span>{% endif %}
+          {% if image_2 != blank %}{{ image_2 | image_url: width: 900 | image_tag: alt: product_2.title, loading: 'lazy', widths: '360, 540, 720, 900', class: 'hp hp--photo c d3' }}{% else %}<span class="hp p-kbtl c d3" role="img" aria-label="Product image placeholder"></span>{% endif %}
           <div class="glass-2 ptag">
             <span class="lbl">{{ section.settings.offer_3_label | default: 'Any 3 products' }}</span>
             <span class="val"><strong>{{ section.settings.offer_3_price | default: '&#8377;499' }}</strong><s>{{ section.settings.offer_3_compare | default: '&#8377;897' }}</s></span>

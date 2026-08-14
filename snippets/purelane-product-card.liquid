@@ -1,0 +1,31 @@
+{% comment %}Reusable product card. Required: product. Optional: animation_delay, button_label.{% endcomment %}
+{% liquid
+  assign rating = product.metafields.reviews.rating.value | default: product.metafields.custom.rating.value
+  assign rating_count = product.metafields.reviews.rating_count.value | default: product.metafields.custom.rating_count.value
+  assign badge = product.metafields.custom.badge.value
+%}
+<article class="glass card rv {{ animation_delay }}">
+  <div class="shot">
+    {% unless product.available %}
+      <span class="pill">Sold out</span>
+    {% elsif badge != blank %}
+      <span class="pill">{{ badge }}</span>
+    {% endunless %}
+    {% if product.featured_image != blank %}
+      {{ product.featured_image | image_url: width: 480 | image_tag: alt: product.featured_image.alt, loading: 'lazy', widths: '160, 240, 320, 480', class: 'pimg' }}
+    {% else %}
+      <span class="product-media-fallback" aria-label="No product image available"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l1 4v13H6V7l1-4Zm1.5 4h7M9 11h6M9 15h6"/></svg><small>No image</small></span>
+    {% endif %}
+  </div>
+  <h4><a href="{{ product.url }}">{{ product.title }}</a></h4>
+  {% if rating != blank %}<div class="rate"><b>★ {{ rating }}</b>{% if rating_count != blank %} · {{ rating_count }} reviews{% endif %}</div>{% endif %}
+  <div class="pr"><strong>{{ product.price | money }}</strong>{% if product.compare_at_price > product.price %}<s>{{ product.compare_at_price | money }}</s><em>{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}% off</em>{% endif %}</div>
+  {% if product.available %}
+    <form method="post" action="{{ routes.cart_add_url }}" data-purelane-cart-form>
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <button type="submit" class="btn btn-ghost btn-sm" style="width:100%;">{{ button_label | default: 'Add to cart' }}</button>
+    </form>
+  {% else %}
+    <button class="btn btn-ghost btn-sm" disabled aria-disabled="true">Sold out</button>
+  {% endif %}
+</article>

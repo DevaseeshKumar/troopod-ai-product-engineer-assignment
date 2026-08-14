@@ -12,7 +12,7 @@
       {% if section.blocks.size > 0 %}
         {% for block in section.blocks %}
           <article class="glass-2 rcard" {{ block.shopify_attributes }}>
-            <div class="st">{{ block.settings.stars | default: '★★★★★' }}</div>
+            <div class="st">{{ block.settings.rating | default: '★★★★★' }}</div>
             <h5>{{ block.settings.heading }}</h5>
             <p>{{ block.settings.quote }}</p>
             <div class="who">
@@ -25,7 +25,7 @@
         <!-- Duplicate loop for smooth continuous marquee -->
         {% for block in section.blocks %}
           <article class="glass-2 rcard" aria-hidden="true">
-            <div class="st">{{ block.settings.stars | default: '★★★★★' }}</div>
+            <div class="st">{{ block.settings.rating | default: '★★★★★' }}</div>
             <h5>{{ block.settings.heading }}</h5>
             <p>{{ block.settings.quote }}</p>
             <div class="who">
@@ -92,7 +92,7 @@
       "settings": [
         {
           "type": "text",
-          "id": "stars",
+          "id": "rating",
           "label": "Stars Rating",
           "default": "★★★★★"
         },
